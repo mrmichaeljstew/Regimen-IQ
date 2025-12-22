@@ -19,6 +19,8 @@
     "tailwindcss": "^4.1.11"
   },
   "devDependencies": {
+    "eslint": "9.39.2",
+    "eslint-config-next": "16.1.1",
     "prettier": "3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14"
   }
