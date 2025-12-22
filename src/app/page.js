@@ -227,19 +227,19 @@ export default function Home() {
                 <div className="flex flex-col">
                   <span className="text-[#97979B]">Endpoint</span>
                   <span className="truncate">
-                    {process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}
+                    https://sfo.cloud.appwrite.io/v1
                   </span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[#97979B]">Project-ID</span>
                   <span className="truncate">
-                    {process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}
+                    regimen-iq
                   </span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[#97979B]">Project name</span>
                   <span className="truncate">
-                    {process.env.NEXT_PUBLIC_APPWRITE_PROJECT_NAME}
+                    RegimenIQ
                   </span>
                 </div>
               </div>
