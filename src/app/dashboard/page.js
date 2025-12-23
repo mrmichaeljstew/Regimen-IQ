@@ -2,12 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { getCurrentUser } from "@/lib/auth";
-import { getPatients } from "@/lib/data";
+import { getPatients, getRegimenItems, getAppointmentBriefs } from "@/lib/data";
+import { checkInteractions } from "@/lib/interactions";
 import Link from "next/link";
 
 export default function DashboardPage() {
   const [user, setUser] = useState(null);
   const [patients, setPatients] = useState([]);
+  const [stats, setStats] = useState({
+    activeRegimens: 0,
+    interactions: 0,
+    briefs: 0,
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,9 +22,50 @@ export default function DashboardPage() {
       setUser(currentUser);
 
       if (currentUser) {
-        const result = await getPatients(currentUser.$id);
-        if (result.success) {
-          setPatients(result.data);
+        const patientResult = await getPatients(currentUser.$id);
+        if (patientResult.success) {
+          setPatients(patientResult.data);
+
+          // Calculate stats
+          let totalActiveRegimens = 0;
+          let totalInteractions = 0;
+          let totalBriefs = 0;
+
+          for (const patient of patientResult.data) {
+            // Get active regimens
+            const regimenResult = await getRegimenItems(
+              currentUser.$id,
+              patient.$id,
+              true
+            );
+            if (regimenResult.success) {
+              totalActiveRegimens += regimenResult.data.length;
+            }
+
+            // Get interactions
+            const interactionResult = await checkInteractions(
+              currentUser.$id,
+              patient.$id
+            );
+            if (interactionResult.success) {
+              totalInteractions += interactionResult.data.length;
+            }
+
+            // Get briefs
+            const briefResult = await getAppointmentBriefs(
+              currentUser.$id,
+              patient.$id
+            );
+            if (briefResult.success) {
+              totalBriefs += briefResult.data.length;
+            }
+          }
+
+          setStats({
+            activeRegimens: totalActiveRegimens,
+            interactions: totalInteractions,
+            briefs: totalBriefs,
+          });
         }
       }
       setLoading(false);
@@ -70,7 +117,9 @@ export default function DashboardPage() {
               <p className="text-sm font-medium text-gray-600">
                 Active Regimens
               </p>
-              <p className="text-2xl font-semibold text-gray-900">0</p>
+              <p className="text-2xl font-semibold text-gray-900">
+                {stats.activeRegimens}
+              </p>
             </div>
           </div>
         </div>
@@ -82,7 +131,9 @@ export default function DashboardPage() {
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Interactions</p>
-              <p className="text-2xl font-semibold text-gray-900">0</p>
+              <p className="text-2xl font-semibold text-gray-900">
+                {stats.interactions}
+              </p>
             </div>
           </div>
         </div>
@@ -96,7 +147,9 @@ export default function DashboardPage() {
               <p className="text-sm font-medium text-gray-600">
                 Saved Briefs
               </p>
-              <p className="text-2xl font-semibold text-gray-900">0</p>
+              <p className="text-2xl font-semibold text-gray-900">
+                {stats.briefs}
+              </p>
             </div>
           </div>
         </div>

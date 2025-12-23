@@ -8,6 +8,7 @@ import {
   createAppointmentBrief,
   getRegimenItems,
   getResearchNotes,
+  deleteAppointmentBrief,
 } from "@/lib/data";
 import { checkInteractions } from "@/lib/interactions";
 import Link from "next/link";
@@ -52,6 +53,17 @@ export default function AppointmentsPage() {
     }
     loadData();
   }, []);
+
+  const handleDelete = async (e, briefId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (confirm("Are you sure you want to delete this appointment brief?")) {
+      const result = await deleteAppointmentBrief(briefId);
+      if (result.success) {
+        setBriefs((prev) => prev.filter((b) => b.$id !== briefId));
+      }
+    }
+  };
 
   if (loading) {
     return (
@@ -146,7 +158,15 @@ export default function AppointmentsPage() {
                           Created {new Date(brief.createdAt).toLocaleDateString()}
                         </p>
                       </div>
-                      <span className="text-gray-400">→</span>
+                      <div className="flex items-center gap-4">
+                        <button
+                          onClick={(e) => handleDelete(e, brief.$id)}
+                          className="text-sm text-red-600 hover:text-red-700"
+                        >
+                          Delete
+                        </button>
+                        <span className="text-gray-400">→</span>
+                      </div>
                     </div>
                   </Link>
                 ))}

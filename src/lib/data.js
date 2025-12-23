@@ -92,10 +92,53 @@ export async function updatePatient(patientId, updates) {
 export async function deletePatient(patientId) {
   try {
     const doc = await databases.getDocument(DATABASE_ID, COLLECTIONS.PATIENTS, patientId);
+    const userId = doc.userId;
+
+    // Delete associated regimen items
+    const regimenItems = await databases.listDocuments(
+      DATABASE_ID,
+      COLLECTIONS.REGIMEN_ITEMS,
+      [Query.equal("patientId", patientId)]
+    );
+    for (const item of regimenItems.documents) {
+      await databases.deleteDocument(DATABASE_ID, COLLECTIONS.REGIMEN_ITEMS, item.$id);
+    }
+
+    // Delete associated research notes
+    const researchNotes = await databases.listDocuments(
+      DATABASE_ID,
+      COLLECTIONS.RESEARCH_NOTES,
+      [Query.equal("patientId", patientId)]
+    );
+    for (const note of researchNotes.documents) {
+      await databases.deleteDocument(DATABASE_ID, COLLECTIONS.RESEARCH_NOTES, note.$id);
+    }
+
+    // Delete associated appointment briefs
+    const briefs = await databases.listDocuments(
+      DATABASE_ID,
+      COLLECTIONS.APPOINTMENT_BRIEFS,
+      [Query.equal("patientId", patientId)]
+    );
+    for (const brief of briefs.documents) {
+      await databases.deleteDocument(DATABASE_ID, COLLECTIONS.APPOINTMENT_BRIEFS, brief.$id);
+    }
+
+    // Delete associated interactions
+    const interactions = await databases.listDocuments(
+      DATABASE_ID,
+      COLLECTIONS.INTERACTIONS,
+      [Query.equal("patientId", patientId)]
+    );
+    for (const interaction of interactions.documents) {
+      await databases.deleteDocument(DATABASE_ID, COLLECTIONS.INTERACTIONS, interaction.$id);
+    }
+
+    // Finally delete the patient
     await databases.deleteDocument(DATABASE_ID, COLLECTIONS.PATIENTS, patientId);
     
     // Audit log
-    await logAction(doc.userId, "delete", "patient", patientId, { name: doc.name });
+    await logAction(userId, "delete", "patient", patientId, { name: doc.name });
     
     return { success: true };
   } catch (error) {
