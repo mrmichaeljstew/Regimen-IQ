@@ -13,7 +13,7 @@
 - `diagnosis` (string) - Primary diagnosis text
 - `diagnosisTags` (string[]) - Searchable tags ["lung-cancer", "stage-3", etc]
 - `notes` (string) - General patient notes
-- `careTeam` (string) - JSON stringified array of care team contacts {name, role, phone, email}
+- `careTeam` (string[]) - Array of JSON stringified care team contacts {name, role, phone, email}
 - `createdAt` (datetime, required)
 - `updatedAt` (datetime, required)
 
@@ -58,7 +58,7 @@
 - `itemIds` (string[]) - Array of regimen_item IDs involved (2+)
 - `severity` (string) - "low", "moderate", "high", "unknown"
 - `description` (string, required) - Interaction description
-- `sources` (string) - JSON stringified array of source URLs/citations
+- `sources` (string[]) - Array of JSON stringified source URLs/citations
 - `discussedWithClinician` (boolean, default: false)
 - `discussionNotes` (string)
 - `createdAt` (datetime, required)
@@ -80,7 +80,7 @@
 - `topic` (string, required) - Research topic
 - `tags` (string[]) - Searchable tags
 - `content` (string, required) - Research findings/notes
-- `sources` (string) - JSON stringified array of sources
+- `sources` (string[]) - Array of JSON stringified sources
 - `relatedItems` (string[]) - IDs of related regimen_items
 - `createdAt` (datetime, required)
 - `updatedAt` (datetime, required)

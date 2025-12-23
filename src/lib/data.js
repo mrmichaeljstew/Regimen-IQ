@@ -21,7 +21,7 @@ export async function createPatient(userId, patientData) {
         diagnosis: patientData.diagnosis || "",
         diagnosisTags: patientData.diagnosisTags || [],
         notes: patientData.notes || "",
-        careTeam: patientData.careTeam ? JSON.stringify(patientData.careTeam) : "[]",
+        careTeam: patientData.careTeam ? patientData.careTeam.map(m => JSON.stringify(m)) : [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
@@ -79,7 +79,7 @@ export async function updatePatient(patientId, updates) {
       patientId,
       {
         ...updates,
-        careTeam: updates.careTeam ? JSON.stringify(updates.careTeam) : undefined,
+        careTeam: updates.careTeam ? updates.careTeam.map(m => JSON.stringify(m)) : undefined,
         updatedAt: new Date().toISOString(),
       }
     );
@@ -151,9 +151,22 @@ export async function deletePatient(patientId) {
 }
 
 function parsePatient(doc) {
+  let careTeam = [];
+  if (doc.careTeam) {
+    if (Array.isArray(doc.careTeam)) {
+      careTeam = doc.careTeam.map(m => {
+        try { return typeof m === 'string' ? JSON.parse(m) : m; }
+        catch (e) { return m; }
+      });
+    } else {
+      try { careTeam = JSON.parse(doc.careTeam); }
+      catch (e) { careTeam = []; }
+    }
+  }
+
   return {
     ...doc,
-    careTeam: doc.careTeam ? JSON.parse(doc.careTeam) : [],
+    careTeam,
     diagnosisTags: doc.diagnosisTags || [],
   };
 }
@@ -272,7 +285,7 @@ export async function createInteraction(userId, patientId, interactionData) {
         itemIds: interactionData.itemIds,
         severity: interactionData.severity || "unknown",
         description: interactionData.description,
-        sources: interactionData.sources ? JSON.stringify(interactionData.sources) : "[]",
+        sources: interactionData.sources ? interactionData.sources.map(s => JSON.stringify(s)) : [],
         discussedWithClinician: interactionData.discussedWithClinician || false,
         discussionNotes: interactionData.discussionNotes || "",
         createdAt: new Date().toISOString(),
@@ -315,7 +328,7 @@ export async function updateInteraction(interactionId, updates) {
       interactionId,
       {
         ...updates,
-        sources: updates.sources ? JSON.stringify(updates.sources) : undefined,
+        sources: updates.sources ? updates.sources.map(s => JSON.stringify(s)) : undefined,
         updatedAt: new Date().toISOString(),
       }
     );
@@ -335,9 +348,22 @@ export async function deleteInteraction(interactionId) {
 }
 
 function parseInteraction(doc) {
+  let sources = [];
+  if (doc.sources) {
+    if (Array.isArray(doc.sources)) {
+      sources = doc.sources.map(s => {
+        try { return typeof s === 'string' ? JSON.parse(s) : s; }
+        catch (e) { return s; }
+      });
+    } else {
+      try { sources = JSON.parse(doc.sources); }
+      catch (e) { sources = []; }
+    }
+  }
+
   return {
     ...doc,
-    sources: doc.sources ? JSON.parse(doc.sources) : [],
+    sources,
   };
 }
 
@@ -356,7 +382,7 @@ export async function createResearchNote(userId, patientId, noteData) {
         tags: noteData.tags || [],
         content: noteData.content,
         importance: noteData.importance || "Medium",
-        sources: noteData.sources ? JSON.stringify(noteData.sources) : "[]",
+        sources: noteData.sources ? noteData.sources.map(s => JSON.stringify(s)) : [],
         relatedItems: noteData.relatedItems || [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -399,7 +425,7 @@ export async function updateResearchNote(noteId, updates) {
       noteId,
       {
         ...updates,
-        sources: updates.sources ? JSON.stringify(updates.sources) : undefined,
+        sources: updates.sources ? updates.sources.map(s => JSON.stringify(s)) : undefined,
         updatedAt: new Date().toISOString(),
       }
     );
@@ -419,9 +445,22 @@ export async function deleteResearchNote(noteId) {
 }
 
 function parseResearchNote(doc) {
+  let sources = [];
+  if (doc.sources) {
+    if (Array.isArray(doc.sources)) {
+      sources = doc.sources.map(s => {
+        try { return typeof s === 'string' ? JSON.parse(s) : s; }
+        catch (e) { return s; }
+      });
+    } else {
+      try { sources = JSON.parse(doc.sources); }
+      catch (e) { sources = []; }
+    }
+  }
+
   return {
     ...doc,
-    sources: doc.sources ? JSON.parse(doc.sources) : [],
+    sources,
   };
 }
 
