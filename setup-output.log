@@ -1,0 +1,12 @@
+🚀 RegimenIQ Appwrite Setup
+================================
+
+📋 Configuration:
+   Endpoint: https://sfo.cloud.appwrite.io/v1
+   Project:  regimen-iq
+   Database: regimen-iq-db
+
+❌ Error: Database 'regimen-iq-db' not found
+   Please create the database in Appwrite Console first.
+   Go to: Databases → Create Database → Name: regimen-iq-db
+
