@@ -32,15 +32,22 @@ export async function createPatient(userId, patientData) {
       ]
     );
     
-    // Audit log
-    await logAction(userId, "create", "patient", doc.$id, { name: patientData.name });
+    // Audit log (non-blocking)
+    logAction(userId, "create", "patient", doc.$id, { name: patientData.name }).catch(() => {});
     
     return { success: true, data: parsePatient(doc) };
   } catch (error) {
-    console.error("Appwrite error (createPatient):", error);
+    console.error("Appwrite error (createPatient):", {
+      code: error.code,
+      message: error.message,
+      type: error.type,
+      userId,
+      database: DATABASE_ID,
+      collection: COLLECTIONS.PATIENTS
+    });
     let message = "Failed to create patient profile. Please try again.";
-    if (error.code === 404) message = "Database or collection not found. Please check configuration.";
-    if (error.code === 401) message = "You are not authorized. Please log in again.";
+    if (error.code === 404) message = "Database or collection not found. Check Appwrite Console and run setup script.";
+    if (error.code === 401 || error.code === 403) message = "Permission denied. Check collection permissions in Appwrite Console - see PERMISSIONS-FIX.md";
     return { success: false, error: message };
   }
 }
@@ -54,6 +61,10 @@ export async function getPatients(userId) {
     );
     return { success: true, data: response.documents.map(parsePatient) };
   } catch (error) {
+    // Only log unexpected errors
+    if (error.code !== 401) {
+      console.error("Error fetching patients:", error);
+    }
     return { success: false, error: error.message };
   }
 }
@@ -84,8 +95,8 @@ export async function updatePatient(patientId, updates) {
       }
     );
     
-    // Audit log
-    await logAction(doc.userId, "update", "patient", patientId, { fields: Object.keys(updates) });
+    // Audit log (non-blocking)
+    logAction(doc.userId, "update", "patient", patientId, { fields: Object.keys(updates) }).catch(() => {});
     
     return { success: true, data: parsePatient(doc) };
   } catch (error) {
