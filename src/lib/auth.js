@@ -15,10 +15,12 @@ import { ID } from "appwrite";
 export async function registerUser(email, password, name) {
   try {
     const user = await account.create(ID.unique(), email, password, name);
+        console.log('Attempting registration with:', { email, password: '***', name });
     // Auto-login after registration
     await account.createEmailPasswordSession(email, password);
     return { success: true, user };
   } catch (error) {
+        console.error('Registration error:', error);
     return { success: false, error: error.message };
   }
 }

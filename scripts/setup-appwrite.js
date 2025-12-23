@@ -321,16 +321,9 @@ async function setup() {
   // Initialize client
   const databases = initClient(env);
 
-  // Verify database exists
-  try {
-    await databases.get(databaseId);
-    console.log(`   ✅ Database verified\n`);
-  } catch (error) {
-    console.error(`\n❌ Error: Database '${databaseId}' not found`);
-    console.error(`   Please create the database in Appwrite Console first.`);
-    console.error(`   Go to: Databases → Create Database → Name: ${databaseId}\n`);
-    process.exit(1);
-  }
+  // Skip database verification - proceed directly to collection creation
+  // The API key may have collection permissions without database.read permission
+  console.log(`   Proceeding with database: ${databaseId}\n`);
 
   // Create collections
   let successCount = 0;
