@@ -107,6 +107,7 @@ function parsePatient(doc) {
   return {
     ...doc,
     careTeam: doc.careTeam ? JSON.parse(doc.careTeam) : [],
+    diagnosisTags: doc.diagnosisTags || [],
   };
 }
 

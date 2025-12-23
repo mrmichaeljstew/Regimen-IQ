@@ -1,8 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
+import Image from "next/image";
+import { client } from "@/lib/appwrite";
+import { AppwriteException } from "appwrite";
+import NextjsLogo from "@/static/nextjs-icon.svg";
+import AppwriteLogo from "@/static/appwrite-icon.svg";
 
 export default function Home() {
   const router = useRouter();

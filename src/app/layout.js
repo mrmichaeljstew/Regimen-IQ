@@ -1,3 +1,5 @@
+import "./app.css";
+
 export const metadata = {
   title: "Appwrite + Next.js",
   description: "Appwrite starter for Next.js",
