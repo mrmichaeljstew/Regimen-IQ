@@ -37,7 +37,11 @@ export async function createPatient(userId, patientData) {
     
     return { success: true, data: parsePatient(doc) };
   } catch (error) {
-    return { success: false, error: error.message };
+    console.error("Appwrite error (createPatient):", error);
+    let message = "Failed to create patient profile. Please try again.";
+    if (error.code === 404) message = "Database or collection not found. Please check configuration.";
+    if (error.code === 401) message = "You are not authorized. Please log in again.";
+    return { success: false, error: message };
   }
 }
 
@@ -351,6 +355,7 @@ export async function createResearchNote(userId, patientId, noteData) {
         topic: noteData.topic,
         tags: noteData.tags || [],
         content: noteData.content,
+        importance: noteData.importance || "Medium",
         sources: noteData.sources ? JSON.stringify(noteData.sources) : "[]",
         relatedItems: noteData.relatedItems || [],
         createdAt: new Date().toISOString(),
@@ -364,6 +369,7 @@ export async function createResearchNote(userId, patientId, noteData) {
     );
     return { success: true, data: parseResearchNote(doc) };
   } catch (error) {
+    console.error("Appwrite error (createResearchNote):", error);
     return { success: false, error: error.message };
   }
 }
@@ -431,6 +437,8 @@ export async function createAppointmentBrief(userId, patientId, briefData) {
         userId,
         patientId,
         appointmentDate: briefData.appointmentDate || null,
+        doctorName: briefData.doctorName || "",
+        appointmentType: briefData.appointmentType || "",
         title: briefData.title,
         generatedContent: briefData.generatedContent,
         includedRegimen: briefData.includedRegimen || [],
@@ -448,6 +456,7 @@ export async function createAppointmentBrief(userId, patientId, briefData) {
     );
     return { success: true, data: doc };
   } catch (error) {
+    console.error("Appwrite error (createAppointmentBrief):", error);
     return { success: false, error: error.message };
   }
 }

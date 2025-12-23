@@ -10,8 +10,17 @@ export default function DashboardLayout({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const pathname = usePathname();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/dashboard/search?q=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("");
+    }
+  };
 
   useEffect(() => {
     async function checkAuth() {
@@ -84,6 +93,25 @@ export default function DashboardLayout({ children }) {
                 })}
               </div>
             </div>
+
+            {/* Global Search */}
+            <div className="flex flex-1 items-center justify-center px-2 lg:ml-6 lg:justify-end">
+              <div className="w-full max-w-lg lg:max-w-xs">
+                <form onSubmit={handleSearch} className="relative">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <span className="text-gray-400">🔍</span>
+                  </div>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:border-blue-500 focus:text-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    placeholder="Search patients, meds, research..."
+                  />
+                </form>
+              </div>
+            </div>
+
             <div className="flex items-center">
               <div className="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center">
                 <span className="mr-4 text-sm text-gray-700">
@@ -159,9 +187,30 @@ export default function DashboardLayout({ children }) {
       </div>
 
       {/* Main Content */}
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 pb-24 sm:pb-8">
         {children}
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white sm:hidden">
+        <div className="flex h-16 items-center justify-around">
+          {navigation.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`flex flex-col items-center justify-center px-2 py-1 ${
+                  isActive ? "text-blue-600" : "text-gray-500"
+                }`}
+              >
+                <span className="text-xl">{item.icon}</span>
+                <span className="text-[10px] font-medium">{item.name}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
 
       {/* Footer */}
       <footer className="border-t border-gray-200 bg-white">

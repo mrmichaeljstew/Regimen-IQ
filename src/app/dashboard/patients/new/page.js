@@ -80,7 +80,7 @@ export default function NewPatientPage() {
     });
 
     if (result.success) {
-      router.push(`/dashboard/patients/${result.data.$id}`);
+      router.push(`/dashboard/patients/${result.data.$id}?new=true`);
     } else {
       setError(result.error);
       setLoading(false);

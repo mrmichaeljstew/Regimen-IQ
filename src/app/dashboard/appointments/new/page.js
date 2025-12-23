@@ -27,6 +27,8 @@ export default function NewAppointmentBriefPage() {
   const [formData, setFormData] = useState({
     title: "",
     appointmentDate: "",
+    doctorName: "",
+    appointmentType: "Follow-up",
     customNotes: "",
   });
 
@@ -80,11 +82,17 @@ export default function NewAppointmentBriefPage() {
   const generateBriefContent = () => {
     let content = `# Appointment Brief: ${patient.name}\n\n`;
     
+    if (formData.doctorName) {
+      content += `**Doctor:** ${formData.doctorName}\n`;
+    }
+    if (formData.appointmentType) {
+      content += `**Type:** ${formData.appointmentType}\n`;
+    }
     if (formData.appointmentDate) {
-      content += `**Appointment Date:** ${new Date(formData.appointmentDate).toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}\n\n`;
+      content += `**Date:** ${new Date(formData.appointmentDate).toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}\n`;
     }
 
-    content += `**Generated:** ${new Date().toLocaleDateString()}\n\n`;
+    content += `\n**Generated:** ${new Date().toLocaleDateString()}\n\n`;
     content += `---\n\n`;
 
     // Diagnosis
@@ -154,6 +162,8 @@ export default function NewAppointmentBriefPage() {
     const result = await createAppointmentBrief(user.$id, patientId, {
       title: formData.title,
       appointmentDate: formData.appointmentDate || null,
+      doctorName: formData.doctorName,
+      appointmentType: formData.appointmentType,
       generatedContent: briefContent,
       includedRegimen: regimenItems.map((i) => i.$id),
       includedInteractions: [], // Interactions are ephemeral
@@ -248,6 +258,41 @@ export default function NewAppointmentBriefPage() {
               }
               className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Doctor Name
+              </label>
+              <input
+                type="text"
+                value={formData.doctorName}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, doctorName: e.target.value }))
+                }
+                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                placeholder="e.g., Dr. Emily Chen"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Appointment Type
+              </label>
+              <select
+                value={formData.appointmentType}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, appointmentType: e.target.value }))
+                }
+                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                <option value="Follow-up">Follow-up</option>
+                <option value="Initial consultation">Initial consultation</option>
+                <option value="Treatment planning">Treatment planning</option>
+                <option value="Results review">Results review</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
           </div>
 
           <div>

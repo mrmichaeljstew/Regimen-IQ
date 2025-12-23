@@ -15,6 +15,14 @@ export default function DashboardPage() {
     briefs: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [showQuickStart, setShowQuickStart] = useState(false);
+
+  useEffect(() => {
+    const dismissed = localStorage.getItem("regimeniq_quickstart_dismissed");
+    if (!dismissed) {
+      setShowQuickStart(true);
+    }
+  }, []);
 
   useEffect(() => {
     async function loadData() {
@@ -91,6 +99,42 @@ export default function DashboardPage() {
           Manage your treatment regimens and health information
         </p>
       </div>
+
+      {showQuickStart && (
+        <div className="mb-8 rounded-lg border border-blue-200 bg-blue-50 p-6 shadow-sm">
+          <div className="flex items-start justify-between">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <span className="text-2xl">🚀</span>
+              </div>
+              <div className="ml-4">
+                <h3 className="text-lg font-medium text-blue-900">Quick Start Guide</h3>
+                <div className="mt-2 text-sm text-blue-700">
+                  <p>Welcome to RegimenIQ! Follow these steps to get started:</p>
+                  <ul className="mt-3 list-inside list-disc space-y-1">
+                    <li>
+                      <Link href="/dashboard/patients/new" className="font-semibold underline">Create a patient profile</Link> for yourself or a loved one.
+                    </li>
+                    <li>Add medications and treatments to your regimen.</li>
+                    <li>Check for potential drug interactions.</li>
+                    <li>Save research notes and prepare for appointments.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                setShowQuickStart(false);
+                localStorage.setItem("regimeniq_quickstart_dismissed", "true");
+              }}
+              className="ml-4 flex-shrink-0 text-blue-400 hover:text-blue-500"
+            >
+              <span className="sr-only">Dismiss</span>
+              <span className="text-xl">×</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Quick Stats */}
       <div className="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

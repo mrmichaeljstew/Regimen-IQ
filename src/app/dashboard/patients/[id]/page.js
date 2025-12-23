@@ -17,6 +17,14 @@ export default function PatientDetailPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get("new") === "true") {
+      setShowWelcomeModal(true);
+    }
+  }, []);
 
   useEffect(() => {
     async function loadData() {
@@ -144,6 +152,12 @@ export default function PatientDetailPage() {
             >
               Edit
             </Link>
+            <button
+              onClick={() => window.print()}
+              className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              Print Report
+            </button>
             <button
               onClick={() => setShowDeleteConfirm(true)}
               className="rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
@@ -347,6 +361,63 @@ export default function PatientDetailPage() {
                 className="flex-1 rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
               >
                 Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Welcome Onboarding Modal */}
+      {showWelcomeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+          <div className="w-full max-w-lg rounded-lg bg-white p-8 shadow-2xl">
+            <div className="text-center">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                <span className="text-3xl">🎉</span>
+              </div>
+              <h2 className="mb-2 text-2xl font-bold text-gray-900">Welcome to RegimenIQ!</h2>
+              <p className="mb-6 text-gray-600">
+                Patient profile for <strong>{patient.name}</strong> has been created successfully.
+              </p>
+            </div>
+
+            <div className="mb-8">
+              <h3 className="mb-4 text-lg font-semibold text-gray-900">Getting Started Checklist:</h3>
+              <ul className="space-y-4">
+                <li className="flex items-center text-gray-700">
+                  <span className="mr-3 flex h-6 w-6 items-center justify-center rounded-full bg-green-500 text-xs text-white">✓</span>
+                  <span>Patient profile created</span>
+                </li>
+                <li className="flex items-center text-gray-700">
+                  <span className="mr-3 flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 text-xs text-gray-400">2</span>
+                  <span>Add your first medication/treatment</span>
+                </li>
+                <li className="flex items-center text-gray-700">
+                  <span className="mr-3 flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 text-xs text-gray-400">3</span>
+                  <span>Check for drug interactions</span>
+                </li>
+                <li className="flex items-center text-gray-700">
+                  <span className="mr-3 flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 text-xs text-gray-400">4</span>
+                  <span>Save important research</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => {
+                  setShowWelcomeModal(false);
+                  setActiveTab("regimen");
+                }}
+                className="w-full rounded-md bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
+              >
+                Add First Medication
+              </button>
+              <button
+                onClick={() => setShowWelcomeModal(false)}
+                className="w-full rounded-md border border-gray-300 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
+                I'll do this later
               </button>
             </div>
           </div>

@@ -18,3 +18,29 @@ summary::-webkit-details-marker {
   z-index: -1;
   background-position-x: center;
 }
+
+@media print {
+  .no-print, 
+  nav, 
+  footer, 
+  button, 
+  aside,
+  .fixed {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .mx-auto {
+    margin: 0 !important;
+    max-width: none !important;
+  }
+  
+  .shadow-sm, .shadow-md, .shadow-lg {
+    shadow: none !important;
+    border: 1px solid #eee !important;
+  }
+}
