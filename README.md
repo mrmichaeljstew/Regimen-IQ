@@ -66,13 +66,25 @@ cd Regimen-IQ
 npm install
 ```
 
-### 2. Setup Appwrite
+### 2. Setup Appwrite Backend
+
+**Option A: Automated Setup (Recommended)**
 
 1. Create an Appwrite Cloud account at [cloud.appwrite.io](https://cloud.appwrite.io)
-2. Create a new project
-3. Create a database named `regimen-iq-db`
-4. Create collections according to [SCHEMA.md](SCHEMA.md)
-5. Set up document-level permissions as specified in the schema
+2. Create a new project and database (`regimen-iq-db`)
+3. Create an API key with database/collection permissions
+4. Add credentials to `.env.local` (see step 3 below)
+5. Run the setup script:
+
+```bash
+npm run setup
+```
+
+This automatically creates all 6 collections with attributes, indexes, and permissions.
+
+**Option B: Manual Setup**
+
+Follow the detailed instructions in [SETUP.md](SETUP.md) to create collections manually through the Appwrite Console.
 
 ### 3. Configure Environment
 

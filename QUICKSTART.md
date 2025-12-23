@@ -25,29 +25,50 @@ npm install
 
 ### Step 2: Configure Appwrite Backend (3 minutes)
 
-You need to create the Appwrite database and collections. Follow the **detailed guide** in [SETUP.md](SETUP.md).
+**Option A: Automated Setup (Recommended)**
 
-**Quick Summary:**
 1. Log in to [cloud.appwrite.io](https://cloud.appwrite.io)
-2. Create a new project
-3. Create database: `regimen-iq-db`
-4. Create 6 collections (see SETUP.md for attributes)
-5. Copy your Project ID
+2. Create a new project (note the Project ID)
+3. Create database: `regimen-iq-db` (note the Database ID)
+4. Create an API key (Settings → API Keys):
+   - Grant: databases, collections, attributes, indexes permissions
+   - Copy the key
+5. Add credentials to `.env.local`:
+   ```bash
+   NEXT_PUBLIC_APPWRITE_ENDPOINT=https://sfo.cloud.appwrite.io/v1
+   NEXT_PUBLIC_APPWRITE_PROJECT_ID=your_project_id_here
+   NEXT_PUBLIC_APPWRITE_DATABASE_ID=regimen-iq-db
+   APPWRITE_API_KEY=your_api_key_here
+   ```
+6. Run the setup script:
+   ```bash
+   npm run setup
+   ```
+7. Enable Email/Password auth in Appwrite Console (Auth → Settings)
+8. Delete the API key from Appwrite Console (for security)
+
+**Option B: Manual Setup**
+
+Follow the detailed manual instructions in [SETUP.md](SETUP.md) to create all 6 collections through the Appwrite Console.
 
 ### Step 3: Update Environment Variables (30 seconds)
 
-Edit `.env.local` and replace `regimen-iq` with your actual Appwrite Project ID:
+If you used automated setup, remove the API key from `.env.local` after setup is complete:
 
 ```bash
-# Edit .env.local
-nano .env.local
-
-# Replace this line:
-# NEXT_PUBLIC_APPWRITE_PROJECT_ID=regimen-iq
-# With your actual project ID from Appwrite Console
+# Edit .env.local and remove this line:
+# APPWRITE_API_KEY=...
 ```
 
-Save and exit.
+Your `.env.local` should only have these 3 variables for runtime:
+
+Your `.env.local` should only have these 3 variables for runtime:
+
+```bash
+NEXT_PUBLIC_APPWRITE_ENDPOINT=https://sfo.cloud.appwrite.io/v1
+NEXT_PUBLIC_APPWRITE_PROJECT_ID=your_actual_project_id
+NEXT_PUBLIC_APPWRITE_DATABASE_ID=regimen-iq-db
+```
 
 ### Step 4: Start the Application (30 seconds)
 

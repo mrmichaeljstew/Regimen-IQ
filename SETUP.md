@@ -1,29 +1,107 @@
 # RegimenIQ - Appwrite Setup Guide
 
-This guide will walk you through setting up the Appwrite backend for RegimenIQ.
+This guide provides two methods for setting up the Appwrite backend: **automated setup script** (recommended) or **manual setup** through the Appwrite Console.
 
 ## Prerequisites
 
 - An Appwrite Cloud account (free tier available at [cloud.appwrite.io](https://cloud.appwrite.io))
 - Or a self-hosted Appwrite instance (version 1.4+)
+- Node.js 18+ installed (for automated setup)
 
-## Step 1: Create Appwrite Project
+---
+
+## 🚀 Method 1: Automated Setup (Recommended)
+
+The automated setup script creates all collections, attributes, indexes, and permissions automatically.
+
+### Step 1: Create Appwrite Project & Database
 
 1. Log in to your Appwrite Console
 2. Click "Create Project"
 3. Name it "RegimenIQ" (or your preferred name)
-4. Note your **Project ID** - you'll need this for `.env.local`
+4. Note your **Project ID** - you'll need this
+5. Navigate to "Databases" → Click "Create Database"
+6. Name it: `regimen-iq-db`
+7. Note the **Database ID**
 
-## Step 2: Create Database
+### Step 2: Create API Key
 
-1. Navigate to "Databases" in the left sidebar
-2. Click "Create Database"
-3. Name it: `regimen-iq-db`
-4. Note the **Database ID** - you'll need this for `.env.local`
+1. In Appwrite Console, go to "Settings" → "API Keys"
+2. Click "Create API Key"
+3. Name: "Setup Script"
+4. Expiration: Set to a date after your setup (or "Never" for development)
+5. Scopes: Select these permissions:
+   - ✅ `databases.read`
+   - ✅ `databases.write`
+   - ✅ `collections.read`
+   - ✅ `collections.write`
+   - ✅ `attributes.read`
+   - ✅ `attributes.write`
+   - ✅ `indexes.read`
+   - ✅ `indexes.write`
+6. Click "Create" and copy your API key (you won't see it again!)
 
-## Step 3: Create Collections
+### Step 3: Configure Environment
 
-You need to create 6 collections. For each collection:
+Add the API key to your `.env.local` file:
+
+```bash
+NEXT_PUBLIC_APPWRITE_ENDPOINT=https://sfo.cloud.appwrite.io/v1
+NEXT_PUBLIC_APPWRITE_PROJECT_ID=your_actual_project_id_here
+NEXT_PUBLIC_APPWRITE_DATABASE_ID=regimen-iq-db
+APPWRITE_API_KEY=your_api_key_here
+```
+
+### Step 4: Run Setup Script
+
+```bash
+npm install  # Make sure node-appwrite is installed
+node scripts/setup-appwrite.js
+```
+
+The script will:
+- ✅ Create all 6 collections (patients, regimen_items, interactions, research_notes, appointment_briefs, audit_log)
+- ✅ Add all attributes with correct types and constraints
+- ✅ Create indexes for query optimization
+- ✅ Enable document-level permissions for user isolation
+- ✅ Skip items that already exist (safe to re-run)
+
+**Expected output:**
+```
+🚀 RegimenIQ Appwrite Setup
+================================
+
+📋 Configuration:
+   Endpoint: https://sfo.cloud.appwrite.io/v1
+   Project:  your-project-id
+   Database: regimen-iq-db
+
+📦 Creating collection: Patients (patients)
+   ✅ Collection created
+   Creating attributes...
+   ✅ userId (string)
+   ✅ name (string)
+   ...
+```
+
+### Step 5: Enable Authentication
+
+1. In Appwrite Console, go to "Auth" → "Settings"
+2. Enable "Email/Password" authentication method
+3. (Optional) Configure email templates for password reset
+
+### Step 6: Security Cleanup
+
+**Important:** After setup is complete, for production:
+1. Delete the API key from Appwrite Console (Settings → API Keys)
+2. Remove `APPWRITE_API_KEY` from `.env.local`
+3. The key was only needed for setup and should not be in production
+
+---
+
+## 🔧 Method 2: Manual Setup
+
+If you prefer to create collections manually through the Appwrite Console:
 
 ### Collection 1: patients
 
