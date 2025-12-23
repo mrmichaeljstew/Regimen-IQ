@@ -62,6 +62,13 @@ export async function getCurrentUser() {
     const user = await account.get();
     return user;
   } catch (error) {
+    // Expected error when no user is logged in - silently return null
+    // Error code 401 means unauthorized (no active session)
+    if (error.code === 401) {
+      return null;
+    }
+    // Log unexpected errors
+    console.error("Unexpected error getting current user:", error);
     return null;
   }
 }

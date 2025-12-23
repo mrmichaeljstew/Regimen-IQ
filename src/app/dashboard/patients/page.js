@@ -4,23 +4,40 @@ import { useEffect, useState } from "react";
 import { getCurrentUser } from "@/lib/auth";
 import { getPatients } from "@/lib/data";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function PatientsPage() {
+  const router = useRouter();
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function loadPatients() {
-      const user = await getCurrentUser();
-      if (user) {
-        const result = await getPatients(user.$id);
-        if (result.success) {
-          setPatients(result.data);
-        }
+  const loadPatients = async () => {
+    setLoading(true);
+    const user = await getCurrentUser();
+    if (user) {
+      const result = await getPatients(user.$id);
+      if (result.success) {
+        setPatients(result.data);
       }
-      setLoading(false);
     }
+    setLoading(false);
+  };
+
+  useEffect(() => {
     loadPatients();
+
+    // Refresh data when page becomes visible (e.g., after navigating back)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        loadPatients();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
   if (loading) {
