@@ -8,6 +8,29 @@ import { ID, Query, Permission, Role } from "appwrite";
 
 // ============ PATIENTS ============
 
+function describeAppwriteError(error) {
+  const safe = {
+    name: error?.name ?? "UnknownError",
+    message: error?.message ?? String(error),
+    code: typeof error?.code === "number" ? error.code : null,
+    type: error?.type ?? null,
+    response: error?.response ?? null,
+    // AppwriteException and Error often keep useful fields non-enumerable
+    ownKeys: error ? Object.getOwnPropertyNames(error) : [],
+  };
+
+  // Some SDKs stash payload in `response` as a JSON string
+  if (typeof safe.response === "string") {
+    try {
+      safe.responseJson = JSON.parse(safe.response);
+    } catch {
+      // ignore
+    }
+  }
+
+  return safe;
+}
+
 export async function createPatient(userId, patientData) {
   try {
     const doc = await databases.createDocument(
@@ -26,28 +49,33 @@ export async function createPatient(userId, patientData) {
         updatedAt: new Date().toISOString(),
       },
       [
+        // Use read/write for broad compatibility with Appwrite permission models.
+        // Include create as well; some Document Security configurations expect it.
+        Permission.create(Role.user(userId)),
         Permission.read(Role.user(userId)),
-        Permission.update(Role.user(userId)),
-        Permission.delete(Role.user(userId)),
+        Permission.write(Role.user(userId)),
       ]
     );
     
     // Audit log (non-blocking)
     logAction(userId, "create", "patient", doc.$id, { name: patientData.name }).catch(() => {});
-    
+
     return { success: true, data: parsePatient(doc) };
   } catch (error) {
-    console.error("Appwrite error (createPatient):", {
-      code: error.code,
-      message: error.message,
-      type: error.type,
-      userId,
-      database: DATABASE_ID,
-      collection: COLLECTIONS.PATIENTS
-    });
+    const details = describeAppwriteError(error);
+    // Log as a string so the Next.js overlay doesn't drop non-enumerable fields / undefined values.
+    console.error(`Appwrite error (createPatient): ${JSON.stringify(details)}`);
+
     let message = "Failed to create patient profile. Please try again.";
-    if (error.code === 404) message = "Database or collection not found. Check Appwrite Console and run setup script.";
-    if (error.code === 401 || error.code === 403) message = "Permission denied. Check collection permissions in Appwrite Console - see PERMISSIONS-FIX.md";
+
+    if (details.code === 404) {
+      message = "Database or collection not found. Check Appwrite Console and run setup script.";
+    } else if (details.code === 401 || details.code === 403) {
+      message = `Permission denied (${details.code}${details.type ? `: ${details.type}` : ""}). Check: (1) Appwrite Project Platforms includes your origin (e.g. http://localhost:3000), (2) Patients collection Create permission includes Role: Users, (3) Document Security is configured as expected.`;
+    } else if (details.message) {
+      message = details.message;
+    }
+
     return { success: false, error: message };
   }
 }
@@ -162,24 +190,34 @@ export async function deletePatient(patientId) {
 }
 
 function parsePatient(doc) {
-  let careTeam = [];
-  if (doc.careTeam) {
-    if (Array.isArray(doc.careTeam)) {
-      careTeam = doc.careTeam.map(m => {
-        try { return typeof m === 'string' ? JSON.parse(m) : m; }
-        catch (e) { return m; }
-      });
-    } else {
-      try { careTeam = JSON.parse(doc.careTeam); }
-      catch (e) { careTeam = []; }
+  try {
+    let careTeam = [];
+    if (doc.careTeam) {
+      if (Array.isArray(doc.careTeam)) {
+        careTeam = doc.careTeam.map(m => {
+          try { return typeof m === 'string' ? JSON.parse(m) : m; }
+          catch (e) { return m; }
+        });
+      } else {
+        try { careTeam = JSON.parse(doc.careTeam); }
+        catch (e) { careTeam = []; }
+      }
     }
-  }
 
-  return {
-    ...doc,
-    careTeam,
-    diagnosisTags: doc.diagnosisTags || [],
-  };
+    return {
+      ...doc,
+      careTeam,
+      diagnosisTags: doc.diagnosisTags || [],
+    };
+  } catch (error) {
+    console.error("Error parsing patient document:", error);
+    // Return doc as-is if parsing fails
+    return {
+      ...doc,
+      careTeam: [],
+      diagnosisTags: [],
+    };
+  }
 }
 
 // ============ REGIMEN ITEMS ============
@@ -206,9 +244,9 @@ export async function createRegimenItem(userId, patientId, itemData) {
         updatedAt: new Date().toISOString(),
       },
       [
+        Permission.create(Role.user(userId)),
         Permission.read(Role.user(userId)),
-        Permission.update(Role.user(userId)),
-        Permission.delete(Role.user(userId)),
+        Permission.write(Role.user(userId)),
       ]
     );
     
@@ -303,9 +341,9 @@ export async function createInteraction(userId, patientId, interactionData) {
         updatedAt: new Date().toISOString(),
       },
       [
+        Permission.create(Role.user(userId)),
         Permission.read(Role.user(userId)),
-        Permission.update(Role.user(userId)),
-        Permission.delete(Role.user(userId)),
+        Permission.write(Role.user(userId)),
       ]
     );
     return { success: true, data: parseInteraction(doc) };
@@ -399,9 +437,9 @@ export async function createResearchNote(userId, patientId, noteData) {
         updatedAt: new Date().toISOString(),
       },
       [
+        Permission.create(Role.user(userId)),
         Permission.read(Role.user(userId)),
-        Permission.update(Role.user(userId)),
-        Permission.delete(Role.user(userId)),
+        Permission.write(Role.user(userId)),
       ]
     );
     return { success: true, data: parseResearchNote(doc) };
@@ -499,9 +537,9 @@ export async function createAppointmentBrief(userId, patientId, briefData) {
         updatedAt: new Date().toISOString(),
       },
       [
+        Permission.create(Role.user(userId)),
         Permission.read(Role.user(userId)),
-        Permission.update(Role.user(userId)),
-        Permission.delete(Role.user(userId)),
+        Permission.write(Role.user(userId)),
       ]
     );
     return { success: true, data: doc };
@@ -571,7 +609,10 @@ export async function logAction(userId, action, resource, resourceId, metadata =
         ipAddress: "", // TODO: Add IP tracking if needed
         timestamp: new Date().toISOString(),
       },
-      [Permission.read(Role.user(userId))]
+      [
+        Permission.create(Role.user(userId)),
+        Permission.read(Role.user(userId)),
+      ]
     );
   } catch (error) {
     console.error("Audit log error:", error);

@@ -4,10 +4,8 @@ import { useEffect, useState } from "react";
 import { getCurrentUser } from "@/lib/auth";
 import { getPatients } from "@/lib/data";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export default function PatientsPage() {
-  const router = useRouter();
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
 
