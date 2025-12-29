@@ -94,7 +94,9 @@ const collections = [
       { key: "endDate", type: "datetime", required: false },
       { key: "source", type: "string", size: 255, required: false },
       { key: "notes", type: "string", size: 5000, required: false },
-      { key: "isActive", type: "boolean", required: true, default: true },
+      // Appwrite doesn't allow default values on *required* boolean attributes.
+      // Keep a default and make it optional; app code always supplies a value anyway.
+      { key: "isActive", type: "boolean", required: false, default: true },
       { key: "createdAt", type: "datetime", required: true },
       { key: "updatedAt", type: "datetime", required: true },
     ],
@@ -114,7 +116,8 @@ const collections = [
       { key: "severity", type: "string", size: 50, required: true },
       { key: "description", type: "string", size: 5000, required: true },
       { key: "sources", type: "string", size: 10000, required: false, array: true },
-      { key: "discussedWithClinician", type: "boolean", required: true, default: false },
+      // Same constraint as above (default + required isn't allowed).
+      { key: "discussedWithClinician", type: "boolean", required: false, default: false },
       { key: "discussionNotes", type: "string", size: 5000, required: false },
       { key: "createdAt", type: "datetime", required: true },
       { key: "updatedAt", type: "datetime", required: true },
@@ -190,17 +193,19 @@ const collections = [
 async function createCollection(databases, databaseId, collection) {
   try {
     console.log(`\n📦 Creating collection: ${collection.name} (${collection.id})`);
-    
+
+    const collectionPermissions = [
+      Permission.create(Role.users()),
+      Permission.read(Role.users()),
+      Permission.update(Role.users()),
+      Permission.delete(Role.users()),
+    ];
+
     await databases.createCollection(
       databaseId,
       collection.id,
       collection.name,
-      [
-        Permission.create(Role.users()),
-        Permission.read(Role.users()),
-        Permission.update(Role.users()),
-        Permission.delete(Role.users()),
-      ],
+      collectionPermissions,
       true // documentSecurity enabled for user isolation
     );
     
@@ -208,7 +213,25 @@ async function createCollection(databases, databaseId, collection) {
     return true;
   } catch (error) {
     if (error.code === 409) {
-      console.log(`   ⚠️  Collection already exists, updating attributes...`);
+      console.log(`   ⚠️  Collection already exists, ensuring permissions + security...`);
+      try {
+        await databases.updateCollection(
+          databaseId,
+          collection.id,
+          collection.name,
+          [
+            Permission.create(Role.users()),
+            Permission.read(Role.users()),
+            Permission.update(Role.users()),
+            Permission.delete(Role.users()),
+          ],
+          true // documentSecurity enabled for user isolation
+        );
+        console.log(`   ✅ Permissions/security updated`);
+      } catch (updateError) {
+        console.log(`   ⚠️  Could not update permissions/security: ${updateError.message}`);
+        console.log(`      (You can also set these manually in the Appwrite Console)`);
+      }
       return true; // Continue to add attributes
     }
     if (error.code === 401) {

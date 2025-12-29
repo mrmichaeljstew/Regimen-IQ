@@ -54,10 +54,18 @@ export default function NewPatientPage() {
     setLoading(true);
 
     const user = await getCurrentUser();
+
     if (!user) {
       router.push("/login");
       return;
     }
+    
+    if (!user.$id) {
+      setError("Invalid user session. Please log out and log in again.");
+      setLoading(false);
+      return;
+    }
+
 
     // Parse tags (comma-separated)
     const tags = formData.diagnosisTags
