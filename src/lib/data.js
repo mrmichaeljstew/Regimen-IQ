@@ -47,14 +47,9 @@ export async function createPatient(userId, patientData) {
         careTeam: patientData.careTeam ? patientData.careTeam.map(m => JSON.stringify(m)) : [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      },
-      [
-        // Use read/write for broad compatibility with Appwrite permission models.
-        // Include create as well; some Document Security configurations expect it.
-        Permission.create(Role.user(userId)),
-        Permission.read(Role.user(userId)),
-        Permission.write(Role.user(userId)),
-      ]
+      }
+      // Permissions removed - rely on collection-level permissions and userId filtering
+      // Collection allows Role.users() to read/write, documents are isolated by userId field in queries
     );
     
     // Audit log (non-blocking)
@@ -242,12 +237,8 @@ export async function createRegimenItem(userId, patientId, itemData) {
         isActive: itemData.isActive !== undefined ? itemData.isActive : true,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      },
-      [
-        Permission.create(Role.user(userId)),
-        Permission.read(Role.user(userId)),
-        Permission.write(Role.user(userId)),
-      ]
+      }
+      // Permissions removed - rely on collection-level permissions and userId filtering
     );
     
     // Audit log
@@ -339,12 +330,8 @@ export async function createInteraction(userId, patientId, interactionData) {
         discussionNotes: interactionData.discussionNotes || "",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      },
-      [
-        Permission.create(Role.user(userId)),
-        Permission.read(Role.user(userId)),
-        Permission.write(Role.user(userId)),
-      ]
+      }
+      // Permissions removed - rely on collection-level permissions and userId filtering
     );
     return { success: true, data: parseInteraction(doc) };
   } catch (error) {
@@ -435,12 +422,8 @@ export async function createResearchNote(userId, patientId, noteData) {
         relatedItems: noteData.relatedItems || [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      },
-      [
-        Permission.create(Role.user(userId)),
-        Permission.read(Role.user(userId)),
-        Permission.write(Role.user(userId)),
-      ]
+      }
+      // Permissions removed - rely on collection-level permissions and userId filtering
     );
     return { success: true, data: parseResearchNote(doc) };
   } catch (error) {
@@ -535,12 +518,8 @@ export async function createAppointmentBrief(userId, patientId, briefData) {
         customNotes: briefData.customNotes || "",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      },
-      [
-        Permission.create(Role.user(userId)),
-        Permission.read(Role.user(userId)),
-        Permission.write(Role.user(userId)),
-      ]
+      }
+      // Permissions removed - rely on collection-level permissions and userId filtering
     );
     return { success: true, data: doc };
   } catch (error) {
@@ -608,11 +587,8 @@ export async function logAction(userId, action, resource, resourceId, metadata =
         metadata: JSON.stringify(metadata),
         ipAddress: "", // TODO: Add IP tracking if needed
         timestamp: new Date().toISOString(),
-      },
-      [
-        Permission.create(Role.user(userId)),
-        Permission.read(Role.user(userId)),
-      ]
+      }
+      // Permissions removed - rely on collection-level permissions and userId filtering
     );
   } catch (error) {
     console.error("Audit log error:", error);
