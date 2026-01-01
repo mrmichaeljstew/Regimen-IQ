@@ -74,6 +74,7 @@ export default function ResearchPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+        console.log("Form submit started", { selectedPatient, formData });
     const user = await getCurrentUser();
 
     const tags = formData.tags
@@ -92,6 +93,7 @@ export default function ResearchPage() {
       importance: formData.importance,
       sources,
     });
+        console.log("Create result:", result);
 
     if (result.success) {
       setFormData({
@@ -103,6 +105,10 @@ export default function ResearchPage() {
       });
       setShowForm(false);
       await loadResearch(user.$id, selectedPatient);
+    }
+     else {
+      console.error("Failed to create note:", result.error);
+      alert("Error creating research note: " + (result.error || "Unknown error"));
     }
   };
 

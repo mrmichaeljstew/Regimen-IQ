@@ -101,6 +101,13 @@ function localInteractionCheck(item1, item2) {
       sources: [
         { title: "Calcium-Iron Interaction", url: "https://ods.od.nih.gov/factsheets/Iron-HealthProfessional/" }
       ]
+    },          {
+      terms: ["tamoxifen", "st john"],
+      severity: "high",
+      description: "St. John's Wort significantly reduces Tamoxifen effectiveness by increasing its metabolism through CYP3A4 enzyme induction. This can reduce cancer treatment efficacy. Avoid concurrent use or discuss alternatives with your oncologist.",
+      sources: [
+        { title: "Tamoxifen-St. John's Wort Interaction", url: "https://www.cancer.gov/about-cancer/treatment/drugs" }
+      ]
     },
     {
       terms: ["st john's wort", "chemotherapy"],

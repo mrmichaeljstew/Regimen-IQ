@@ -414,12 +414,16 @@ export async function createResearchNote(userId, patientId, noteData) {
       {
         userId,
         patientId,
+              noteId: Date.now(), // Generate unique integer ID
+                    noteText: noteData.content.substring(0, 500), // Legacy field
+      author: userId, // Legacy field
+            createdDate: new Date().toISOString(), // Legacy field
+      modifiedDate: new Date().toISOString(), // Legacy field
         topic: noteData.topic,
         tags: noteData.tags || [],
         content: noteData.content,
         importance: noteData.importance || "Medium",
-        sources: noteData.sources ? noteData.sources.map(s => JSON.stringify(s)) : [],
-        relatedItems: noteData.relatedItems || [],
+      sources: noteData.sources ? JSON.stringify(noteData.sources) : JSON.stringify([]),        relatedItems: noteData.relatedItems || [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       }
@@ -507,6 +511,7 @@ export async function createAppointmentBrief(userId, patientId, briefData) {
       {
         userId,
         patientId,
+              briefId: Date.now(), // Legacy field - unique integer ID
         appointmentDate: briefData.appointmentDate || null,
         doctorName: briefData.doctorName || "",
         appointmentType: briefData.appointmentType || "",
