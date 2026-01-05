@@ -6,6 +6,50 @@ import { ID } from "appwrite";
  */
 
 /**
+ * Helper function to format authentication errors with helpful messages
+ * @param {Error} error - The error object from Appwrite
+ * @param {string} context - Context of the error (login, register, etc.)
+ * @returns {string} User-friendly error message
+ */
+function formatAuthError(error, context = 'authentication') {
+  // Log error details for debugging (sanitize sensitive data)
+  if (process.env.NODE_ENV === 'development') {
+    console.error(`${context} error details:`, {
+      message: error.message,
+      code: error.code,
+      type: error.type
+    });
+  }
+  
+  let errorMessage = error.message || 'An unknown error occurred';
+  
+  // Network/fetch errors - likely CORS or platform configuration issues
+  if (errorMessage === 'Failed to fetch' || error.type === 'network' || !error.code) {
+    return 'Unable to connect to the server. Please check that your deployment domain is registered in Appwrite Console (Settings → Platforms). See PLATFORM-SETUP.md for help.';
+  }
+  
+  // Appwrite-specific errors based on context
+  if (context === 'login') {
+    if (error.code === 401) {
+      return 'Invalid email or password. Please try again.';
+    } else if (error.code === 429) {
+      return 'Too many login attempts. Please try again later.';
+    }
+  } else if (context === 'registration') {
+    if (error.code === 409) {
+      return 'An account with this email already exists. Please try logging in instead.';
+    } else if (error.code === 400) {
+      // Check if it's a password validation error
+      if (errorMessage.toLowerCase().includes('password')) {
+        return 'Password is too weak. Please use at least 8 characters.';
+      }
+    }
+  }
+  
+  return errorMessage;
+}
+
+/**
  * Register a new user with email and password
  * @param {string} email
  * @param {string} password
@@ -15,13 +59,12 @@ import { ID } from "appwrite";
 export async function registerUser(email, password, name) {
   try {
     const user = await account.create(ID.unique(), email, password, name);
-        console.log('Attempting registration with:', { email, password: '***', name });
+    console.log('User created successfully, attempting auto-login');
     // Auto-login after registration
     await account.createEmailPasswordSession(email, password);
     return { success: true, user };
   } catch (error) {
-        console.error('Registration error:', error);
-    return { success: false, error: error.message };
+    return { success: false, error: formatAuthError(error, 'registration') };
   }
 }
 
@@ -36,7 +79,7 @@ export async function loginUser(email, password) {
     const session = await account.createEmailPasswordSession(email, password);
     return { success: true, session };
   } catch (error) {
-    return { success: false, error: error.message };
+    return { success: false, error: formatAuthError(error, 'login') };
   }
 }
 
