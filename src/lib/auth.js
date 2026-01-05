@@ -15,13 +15,33 @@ import { ID } from "appwrite";
 export async function registerUser(email, password, name) {
   try {
     const user = await account.create(ID.unique(), email, password, name);
-        console.log('Attempting registration with:', { email, password: '***', name });
+    console.log('User created successfully, attempting auto-login');
     // Auto-login after registration
     await account.createEmailPasswordSession(email, password);
     return { success: true, user };
   } catch (error) {
-        console.error('Registration error:', error);
-    return { success: false, error: error.message };
+    console.error('Registration error details:', {
+      message: error.message,
+      code: error.code,
+      type: error.type,
+      response: error.response
+    });
+    
+    // Handle different types of errors with helpful messages
+    let errorMessage = error.message || 'An unknown error occurred';
+    
+    // Network/fetch errors - likely CORS or platform configuration issues
+    if (errorMessage === 'Failed to fetch' || error.type === 'network' || !error.code) {
+      errorMessage = 'Unable to connect to the authentication server. Please ensure your deployment domain is registered in the Appwrite Console under Settings → Platforms. See PLATFORM-SETUP.md for details.';
+    }
+    // Appwrite-specific errors
+    else if (error.code === 409) {
+      errorMessage = 'An account with this email already exists. Please try logging in instead.';
+    } else if (error.code === 400 && errorMessage.includes('password')) {
+      errorMessage = 'Password is too weak. Please use at least 8 characters.';
+    }
+    
+    return { success: false, error: errorMessage };
   }
 }
 
@@ -36,7 +56,28 @@ export async function loginUser(email, password) {
     const session = await account.createEmailPasswordSession(email, password);
     return { success: true, session };
   } catch (error) {
-    return { success: false, error: error.message };
+    console.error('Login error details:', {
+      message: error.message,
+      code: error.code,
+      type: error.type,
+      response: error.response
+    });
+    
+    // Handle different types of errors with helpful messages
+    let errorMessage = error.message || 'An unknown error occurred';
+    
+    // Network/fetch errors - likely CORS or platform configuration issues
+    if (errorMessage === 'Failed to fetch' || error.type === 'network' || !error.code) {
+      errorMessage = 'Unable to connect to the authentication server. Please ensure your deployment domain is registered in the Appwrite Console under Settings → Platforms. See PLATFORM-SETUP.md for details.';
+    }
+    // Appwrite-specific errors (these have error codes)
+    else if (error.code === 401) {
+      errorMessage = 'Invalid email or password. Please try again.';
+    } else if (error.code === 429) {
+      errorMessage = 'Too many login attempts. Please try again later.';
+    }
+    
+    return { success: false, error: errorMessage };
   }
 }
 
