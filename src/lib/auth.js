@@ -6,6 +6,45 @@ import { ID } from "appwrite";
  */
 
 /**
+ * Helper function to format authentication errors with helpful messages
+ * @param {Error} error - The error object from Appwrite
+ * @param {string} context - Context of the error (login, register, etc.)
+ * @returns {string} User-friendly error message
+ */
+function formatAuthError(error, context = 'authentication') {
+  console.error(`${context} error details:`, {
+    message: error.message,
+    code: error.code,
+    type: error.type,
+    response: error.response
+  });
+  
+  let errorMessage = error.message || 'An unknown error occurred';
+  
+  // Network/fetch errors - likely CORS or platform configuration issues
+  if (errorMessage === 'Failed to fetch' || error.type === 'network' || !error.code) {
+    return 'Unable to connect to the authentication server. Please ensure your deployment domain is registered in the Appwrite Console under Settings → Platforms. See PLATFORM-SETUP.md for details.';
+  }
+  
+  // Appwrite-specific errors based on context
+  if (context === 'login') {
+    if (error.code === 401) {
+      return 'Invalid email or password. Please try again.';
+    } else if (error.code === 429) {
+      return 'Too many login attempts. Please try again later.';
+    }
+  } else if (context === 'registration') {
+    if (error.code === 409) {
+      return 'An account with this email already exists. Please try logging in instead.';
+    } else if (error.code === 400 && errorMessage.includes('password')) {
+      return 'Password is too weak. Please use at least 8 characters.';
+    }
+  }
+  
+  return errorMessage;
+}
+
+/**
  * Register a new user with email and password
  * @param {string} email
  * @param {string} password
@@ -20,28 +59,7 @@ export async function registerUser(email, password, name) {
     await account.createEmailPasswordSession(email, password);
     return { success: true, user };
   } catch (error) {
-    console.error('Registration error details:', {
-      message: error.message,
-      code: error.code,
-      type: error.type,
-      response: error.response
-    });
-    
-    // Handle different types of errors with helpful messages
-    let errorMessage = error.message || 'An unknown error occurred';
-    
-    // Network/fetch errors - likely CORS or platform configuration issues
-    if (errorMessage === 'Failed to fetch' || error.type === 'network' || !error.code) {
-      errorMessage = 'Unable to connect to the authentication server. Please ensure your deployment domain is registered in the Appwrite Console under Settings → Platforms. See PLATFORM-SETUP.md for details.';
-    }
-    // Appwrite-specific errors
-    else if (error.code === 409) {
-      errorMessage = 'An account with this email already exists. Please try logging in instead.';
-    } else if (error.code === 400 && errorMessage.includes('password')) {
-      errorMessage = 'Password is too weak. Please use at least 8 characters.';
-    }
-    
-    return { success: false, error: errorMessage };
+    return { success: false, error: formatAuthError(error, 'registration') };
   }
 }
 
@@ -56,28 +74,7 @@ export async function loginUser(email, password) {
     const session = await account.createEmailPasswordSession(email, password);
     return { success: true, session };
   } catch (error) {
-    console.error('Login error details:', {
-      message: error.message,
-      code: error.code,
-      type: error.type,
-      response: error.response
-    });
-    
-    // Handle different types of errors with helpful messages
-    let errorMessage = error.message || 'An unknown error occurred';
-    
-    // Network/fetch errors - likely CORS or platform configuration issues
-    if (errorMessage === 'Failed to fetch' || error.type === 'network' || !error.code) {
-      errorMessage = 'Unable to connect to the authentication server. Please ensure your deployment domain is registered in the Appwrite Console under Settings → Platforms. See PLATFORM-SETUP.md for details.';
-    }
-    // Appwrite-specific errors (these have error codes)
-    else if (error.code === 401) {
-      errorMessage = 'Invalid email or password. Please try again.';
-    } else if (error.code === 429) {
-      errorMessage = 'Too many login attempts. Please try again later.';
-    }
-    
-    return { success: false, error: errorMessage };
+    return { success: false, error: formatAuthError(error, 'login') };
   }
 }
 
