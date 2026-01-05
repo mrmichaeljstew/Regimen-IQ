@@ -3,7 +3,22 @@
 import { Client, Account, Databases } from "appwrite";
 
 const endpoint = process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT || "https://sfo.cloud.appwrite.io/v1";
-const projectId = process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID || "regimen-iq";
+
+function normalizeProjectId(id) {
+  if (!id) return id;
+  // Appwrite Cloud console URLs often use a slug like: project-<region>-<projectId>
+  // The SDK expects just <projectId>.
+  if (id.startsWith("project-")) {
+    const parts = id.split("-");
+    if (parts.length >= 3) {
+      return parts.slice(2).join("-");
+    }
+  }
+  return id;
+}
+
+const projectId =
+  normalizeProjectId(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID) || "regimen-iq";
 
 // Log configuration for debugging (only in development)
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {

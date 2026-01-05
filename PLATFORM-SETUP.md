@@ -39,6 +39,9 @@ NEXT_PUBLIC_APPWRITE_PROJECT_ID=regimen-iq
 NEXT_PUBLIC_APPWRITE_DATABASE_ID=regimen-iq-db
 ```
 
+Note: Your Appwrite Cloud console URL may look like `.../console/project-sfo-regimen-iq/...`.
+The SDK **project ID** is just `regimen-iq` (the part after `project-sfo-`).
+
 ### Step 3: Add Additional Hostnames (if needed)
 
 If you're also testing from `localhost` or have other deployment environments, add those as separate web platforms:
