@@ -86,6 +86,17 @@ This automatically creates all 6 collections with attributes, indexes, and permi
 
 Follow the detailed instructions in [SETUP.md](SETUP.md) to create collections manually through the Appwrite Console.
 
+**Important: Platform Configuration**
+
+After setting up your Appwrite project, you must add your deployment domain as a web platform:
+
+1. Go to Appwrite Console → Your Project → Settings → Platforms
+2. Click "Add Platform" → "Web App"
+3. Enter your hostname (e.g., `localhost` for local development, or your deployment domain)
+4. Do NOT include `https://` or `http://` - just the hostname
+
+Without this step, you'll encounter "Failed to fetch" errors when trying to sign in. See [PLATFORM-SETUP.md](PLATFORM-SETUP.md) for detailed instructions.
+
 ### 3. Configure Environment
 
 Copy `.env.example` to `.env.local` and add your Appwrite credentials:
