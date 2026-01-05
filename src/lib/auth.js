@@ -12,18 +12,20 @@ import { ID } from "appwrite";
  * @returns {string} User-friendly error message
  */
 function formatAuthError(error, context = 'authentication') {
-  console.error(`${context} error details:`, {
-    message: error.message,
-    code: error.code,
-    type: error.type,
-    response: error.response
-  });
+  // Log error details for debugging (sanitize sensitive data)
+  if (process.env.NODE_ENV === 'development') {
+    console.error(`${context} error details:`, {
+      message: error.message,
+      code: error.code,
+      type: error.type
+    });
+  }
   
   let errorMessage = error.message || 'An unknown error occurred';
   
   // Network/fetch errors - likely CORS or platform configuration issues
   if (errorMessage === 'Failed to fetch' || error.type === 'network' || !error.code) {
-    return 'Unable to connect to the authentication server. Please ensure your deployment domain is registered in the Appwrite Console under Settings → Platforms. See PLATFORM-SETUP.md for details.';
+    return 'Unable to connect to the server. Please check that your deployment domain is registered in Appwrite Console (Settings → Platforms). See PLATFORM-SETUP.md for help.';
   }
   
   // Appwrite-specific errors based on context
@@ -36,8 +38,11 @@ function formatAuthError(error, context = 'authentication') {
   } else if (context === 'registration') {
     if (error.code === 409) {
       return 'An account with this email already exists. Please try logging in instead.';
-    } else if (error.code === 400 && errorMessage.includes('password')) {
-      return 'Password is too weak. Please use at least 8 characters.';
+    } else if (error.code === 400) {
+      // Check if it's a password validation error
+      if (errorMessage.toLowerCase().includes('password')) {
+        return 'Password is too weak. Please use at least 8 characters.';
+      }
     }
   }
   
