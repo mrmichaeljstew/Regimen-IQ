@@ -4,8 +4,10 @@
  * Local database of foods and their safety criteria for a throat cancer patient
  * on a liquid/pureed diet undergoing radiation treatment.
  *
- * Each food is evaluated across six criteria:
- * 1. Acidity (pH) - foods below pH 5.0 flagged
+ * Each food is evaluated across six criteria. These are clinical guidelines with
+ * some item-specific exceptions documented in the notes:
+ * 1. Acidity (pH) - generally flag foods below pH 5.0; some exceptions (e.g.,
+ *    certain cultured dairy) are left unflagged when typically well tolerated
  * 2. Texture - anything not completely smooth flagged
  * 3. Spice/Irritants - capsaicin, pepper, etc. flagged
  * 4. Temperature - very hot foods flagged as caution
