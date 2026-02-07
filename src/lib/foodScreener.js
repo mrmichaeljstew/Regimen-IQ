@@ -183,7 +183,7 @@ export function screenMultipleFoods(input) {
 
 /**
  * Get counts of flagged criteria for a food entry.
- * Used to determine CAUTION vs AVOID classification.
+ * Used by the UI to summarize which criteria were triggered.
  */
 export function getFlaggedCriteria(criteria) {
   if (!criteria) return { major: [], minor: [] };

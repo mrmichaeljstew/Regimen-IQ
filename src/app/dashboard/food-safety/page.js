@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   screenMultipleFoods,
   getVerdictDisplay,
@@ -46,9 +46,24 @@ export default function FoodSafetyPage() {
   const [results, setResults] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [quickRefOpen, setQuickRefOpen] = useState(false);
-  const [unknownFoods, setUnknownFoods] = useState(getStoredUnknownFoods);
+  const [unknownFoods, setUnknownFoods] = useState([]);
   const [showUnknownList, setShowUnknownList] = useState(false);
   const [savedNotice, setSavedNotice] = useState(null);
+  const savedNoticeTimer = useRef(null);
+
+  // Load unknown foods from localStorage after mount to avoid hydration mismatch
+  useEffect(() => {
+    setUnknownFoods(getStoredUnknownFoods());
+  }, []);
+
+  // Clean up savedNotice timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (savedNoticeTimer.current) {
+        clearTimeout(savedNoticeTimer.current);
+      }
+    };
+  }, []);
 
   const handleCheck = (e) => {
     e.preventDefault();
@@ -69,7 +84,10 @@ export default function FoodSafetyPage() {
     const updated = saveUnknownFood(foodName);
     setUnknownFoods(updated);
     setSavedNotice(foodName);
-    setTimeout(() => setSavedNotice(null), 2000);
+    if (savedNoticeTimer.current) {
+      clearTimeout(savedNoticeTimer.current);
+    }
+    savedNoticeTimer.current = setTimeout(() => setSavedNotice(null), 2000);
   };
 
   const handleRemoveUnknown = (foodName) => {
@@ -141,9 +159,9 @@ export default function FoodSafetyPage() {
             checked)
           </h2>
 
-          {results.map((result, index) => (
+          {results.map((result) => (
             <ResultCard
-              key={index}
+              key={`${result.input}-${result.verdict}`}
               result={result}
               onFlagUnknown={handleFlagUnknown}
               savedNotice={savedNotice}
@@ -173,9 +191,9 @@ export default function FoodSafetyPage() {
                 the care team.
               </p>
               <ul className="space-y-2">
-                {unknownFoods.map((food, i) => (
+                {unknownFoods.map((food) => (
                   <li
-                    key={i}
+                    key={food.name}
                     className="flex items-center justify-between rounded-md border border-gray-100 px-3 py-2"
                   >
                     <div>

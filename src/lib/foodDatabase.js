@@ -5,7 +5,9 @@
  * on a liquid/pureed diet undergoing radiation treatment.
  *
  * Each food is evaluated across six criteria:
- * 1. Acidity (pH) - foods below pH 5.0 flagged
+ * 1. Acidity (pH) - generally, foods below pH 5.0 are flagged; however,
+ *    some mildly acidic foods (e.g., yogurt, cream cheese) are marked safe
+ *    due to their throat-coating properties that outweigh mild acidity.
  * 2. Texture - anything not completely smooth flagged
  * 3. Spice/Irritants - capsaicin, pepper, etc. flagged
  * 4. Temperature - very hot foods flagged as caution
