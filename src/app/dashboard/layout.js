@@ -54,6 +54,7 @@ export default function DashboardLayout({ children }) {
   const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: "🏠" },
     { name: "Patients", href: "/dashboard/patients", icon: "👤" },
+    { name: "Food Safety", href: "/dashboard/food-safety", icon: "🍽️" },
     { name: "Interactions", href: "/dashboard/interactions", icon: "⚠️" },
     { name: "Research", href: "/dashboard/research", icon: "🔬" },
     { name: "Appointments", href: "/dashboard/appointments", icon: "📋" },
