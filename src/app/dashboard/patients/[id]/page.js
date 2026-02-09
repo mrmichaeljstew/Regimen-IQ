@@ -113,14 +113,14 @@ export default function PatientDetailPage() {
         </Link>
       </div>
 
-      <div className="mb-8 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <div className="flex items-start justify-between">
+      <div className="mb-8 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start">
-            <div className="mr-4 flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-blue-100">
-              <span className="text-3xl">👤</span>
+            <div className="mr-3 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 sm:mr-4 sm:h-16 sm:w-16">
+              <span className="text-2xl sm:text-3xl">👤</span>
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">
                 {patient.name}
               </h1>
               {patient.relationship && (
@@ -129,7 +129,7 @@ export default function PatientDetailPage() {
                 </span>
               )}
               {patient.diagnosis && (
-                <p className="mt-2 text-gray-600">{patient.diagnosis}</p>
+                <p className="mt-2 text-sm text-gray-600 sm:text-base">{patient.diagnosis}</p>
               )}
               {patient.diagnosisTags && patient.diagnosisTags.length > 0 && (
                 <div className="mt-2 flex flex-wrap gap-1">
@@ -145,22 +145,22 @@ export default function PatientDetailPage() {
               )}
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Link
               href={`/dashboard/patients/${params.id}/edit`}
-              className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center justify-center rounded-md border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
               Edit
             </Link>
             <button
               onClick={() => window.print()}
-              className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center justify-center rounded-md border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
               Print Report
             </button>
             <button
               onClick={() => setShowDeleteConfirm(true)}
-              className="rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
+              className="inline-flex items-center justify-center rounded-md border border-red-300 px-4 py-2.5 text-sm font-medium text-red-700 hover:bg-red-50"
             >
               Delete
             </button>
@@ -175,10 +175,10 @@ export default function PatientDetailPage() {
 
       {/* Tabs */}
       <div className="mb-6 border-b border-gray-200">
-        <nav className="-mb-px flex space-x-8">
+        <nav className="-mb-px flex space-x-4 sm:space-x-8">
           <button
             onClick={() => setActiveTab("overview")}
-            className={`border-b-2 px-1 py-4 text-sm font-medium ${
+            className={`border-b-2 px-2 py-3 text-sm font-medium sm:px-1 sm:py-4 ${
               activeTab === "overview"
                 ? "border-blue-500 text-blue-600"
                 : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
@@ -188,7 +188,7 @@ export default function PatientDetailPage() {
           </button>
           <button
             onClick={() => setActiveTab("regimen")}
-            className={`border-b-2 px-1 py-4 text-sm font-medium ${
+            className={`border-b-2 px-2 py-3 text-sm font-medium sm:px-1 sm:py-4 ${
               activeTab === "regimen"
                 ? "border-blue-500 text-blue-600"
                 : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
@@ -198,7 +198,7 @@ export default function PatientDetailPage() {
           </button>
           <button
             onClick={() => setActiveTab("care-team")}
-            className={`border-b-2 px-1 py-4 text-sm font-medium ${
+            className={`border-b-2 px-2 py-3 text-sm font-medium sm:px-1 sm:py-4 ${
               activeTab === "care-team"
                 ? "border-blue-500 text-blue-600"
                 : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"

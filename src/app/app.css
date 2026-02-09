@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* Prevent iOS auto-zoom on form inputs (requires min 16px font-size) */
+@media screen and (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
 summary::-webkit-details-marker {
   display: none
 }

@@ -68,7 +68,7 @@ export default function NewRegimenItemPage() {
         </Link>
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
+      <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-8">
         <h1 className="mb-2 text-2xl font-bold text-gray-900">
           Add Regimen Item
         </h1>

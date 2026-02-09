@@ -99,7 +99,7 @@ export default function FoodSafetyPage() {
     <div>
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Food Safety Check</h1>
+        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Food Safety Check</h1>
         <p className="mt-2 text-gray-600">
           Check whether a food or ingredient is safe for a radiation-damaged
           throat. Enter one or more foods separated by commas.

@@ -48,16 +48,16 @@ export default function PatientsPage() {
 
   return (
     <div>
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Patients</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Patients</h1>
+          <p className="mt-1 text-sm text-gray-600 sm:mt-2 sm:text-base">
             Manage patient profiles and their treatment regimens
           </p>
         </div>
         <Link
           href="/dashboard/patients/new"
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          className="inline-flex items-center justify-center self-start rounded-md bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
         >
           Add Patient
         </Link>

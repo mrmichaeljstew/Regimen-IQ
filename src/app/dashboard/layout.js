@@ -106,7 +106,7 @@ export default function DashboardLayout({ children }) {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:border-blue-500 focus:text-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="block w-full rounded-md border border-gray-300 bg-white py-2.5 pl-10 pr-3 text-base sm:text-sm placeholder-gray-500 focus:border-blue-500 focus:text-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
                     placeholder="Search patients, meds, research..."
                   />
                 </form>
@@ -128,10 +128,10 @@ export default function DashboardLayout({ children }) {
               <div className="flex items-center sm:hidden">
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
                 >
                   <span className="sr-only">Open main menu</span>
-                  {mobileMenuOpen ? "✕" : "☰"}
+                  <span className="text-xl">{mobileMenuOpen ? "✕" : "☰"}</span>
                 </button>
               </div>
             </div>
@@ -149,7 +149,7 @@ export default function DashboardLayout({ children }) {
                     key={item.name}
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`block border-l-4 py-2 pl-3 pr-4 text-base font-medium ${
+                    className={`block border-l-4 py-3 pl-3 pr-4 text-base font-medium ${
                       isActive
                         ? "border-blue-500 bg-blue-50 text-blue-700"
                         : "border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800"
@@ -166,7 +166,7 @@ export default function DashboardLayout({ children }) {
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="block w-full px-4 py-2 text-left text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-800"
+                  className="block w-full px-4 py-3 text-left text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-800"
                 >
                   Sign out
                 </button>
@@ -194,19 +194,19 @@ export default function DashboardLayout({ children }) {
 
       {/* Mobile Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white sm:hidden">
-        <div className="flex h-16 items-center justify-around">
+        <div className="flex items-center justify-around pb-[env(safe-area-inset-bottom)]">
           {navigation.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex flex-col items-center justify-center px-2 py-1 ${
+                className={`flex min-h-[56px] min-w-[44px] flex-1 flex-col items-center justify-center py-2 ${
                   isActive ? "text-blue-600" : "text-gray-500"
                 }`}
               >
                 <span className="text-xl">{item.icon}</span>
-                <span className="text-[10px] font-medium">{item.name}</span>
+                <span className="text-[11px] font-medium leading-tight">{item.name}</span>
               </Link>
             );
           })}

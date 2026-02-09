@@ -92,10 +92,10 @@ export default function DashboardPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
           Welcome back, {user?.name?.split(" ")[0] || "there"}!
         </h1>
-        <p className="mt-2 text-gray-600">
+        <p className="mt-1 text-sm text-gray-600 sm:mt-2 sm:text-base">
           Manage your treatment regimens and health information
         </p>
       </div>
@@ -127,7 +127,7 @@ export default function DashboardPage() {
                 setShowQuickStart(false);
                 localStorage.setItem("regimeniq_quickstart_dismissed", "true");
               }}
-              className="ml-4 flex-shrink-0 text-blue-400 hover:text-blue-500"
+              className="ml-4 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md text-blue-400 hover:bg-blue-100 hover:text-blue-500"
             >
               <span className="sr-only">Dismiss</span>
               <span className="text-xl">×</span>

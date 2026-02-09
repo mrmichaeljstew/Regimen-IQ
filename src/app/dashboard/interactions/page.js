@@ -60,10 +60,10 @@ export default function InteractionsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
           Interaction Checking
         </h1>
-        <p className="mt-2 text-gray-600">
+        <p className="mt-1 text-sm text-gray-600 sm:mt-2 sm:text-base">
           Review potential drug and supplement interactions
         </p>
       </div>
@@ -78,7 +78,7 @@ export default function InteractionsPage() {
             <select
               value={selectedPatient || ""}
               onChange={(e) => handlePatientChange(e.target.value)}
-              className="mt-2 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:w-auto"
+              className="mt-2 w-full rounded-md border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:w-auto sm:text-sm"
             >
               {patients.map((patient) => (
                 <option key={patient.$id} value={patient.$id}>
@@ -92,13 +92,13 @@ export default function InteractionsPage() {
           <div className="mb-6 rounded-lg border border-blue-100 bg-blue-50 p-4">
             <h3 className="text-sm font-semibold text-blue-900">Check a new medication or supplement</h3>
             <p className="text-xs text-blue-700 mb-3">See if a new item interacts with {selectedPatientData?.name}'s current regimen.</p>
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
               <input
                 type="text"
                 value={tempMed}
                 onChange={(e) => setTempMed(e.target.value)}
                 placeholder="e.g., Ibuprofen, St. John's Wort"
-                className="flex-1 rounded-md border border-blue-200 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="flex-1 rounded-md border border-blue-200 bg-white px-3 py-2.5 text-base sm:text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
               <button
                 onClick={() => {
@@ -107,7 +107,7 @@ export default function InteractionsPage() {
                     setTempMed("");
                   }
                 }}
-                className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                className="rounded-md bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
               >
                 Check
               </button>

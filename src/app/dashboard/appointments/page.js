@@ -75,15 +75,13 @@ export default function AppointmentsPage() {
 
   return (
     <div>
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            Appointment Briefs
-          </h1>
-          <p className="mt-2 text-gray-600">
-            Generate clinician-friendly summaries for appointments
-          </p>
-        </div>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+          Appointment Briefs
+        </h1>
+        <p className="mt-1 text-sm text-gray-600 sm:mt-2 sm:text-base">
+          Generate clinician-friendly summaries for appointments
+        </p>
       </div>
 
       {patients.length > 0 ? (
@@ -128,12 +126,12 @@ export default function AppointmentsPage() {
                   <Link
                     key={brief.$id}
                     href={`/dashboard/appointments/${brief.$id}`}
-                    className="block rounded-lg border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md"
+                    className="block rounded-lg border border-gray-200 bg-white p-4 transition-shadow hover:shadow-md sm:p-6"
                   >
-                    <div className="flex items-start justify-between">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-lg font-semibold text-gray-900">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h3 className="text-base font-semibold text-gray-900 sm:text-lg">
                             {brief.title}
                           </h3>
                           <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-700">
@@ -161,7 +159,7 @@ export default function AppointmentsPage() {
                       <div className="flex items-center gap-4">
                         <button
                           onClick={(e) => handleDelete(e, brief.$id)}
-                          className="text-sm text-red-600 hover:text-red-700"
+                          className="rounded-md px-2 py-1.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700"
                         >
                           Delete
                         </button>

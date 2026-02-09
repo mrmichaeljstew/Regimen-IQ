@@ -106,7 +106,7 @@ export default function NewPatientPage() {
         </Link>
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
+      <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-8">
         <h1 className="mb-2 text-2xl font-bold text-gray-900">
           Add New Patient
         </h1>
@@ -258,7 +258,7 @@ export default function NewPatientPage() {
                       <button
                         type="button"
                         onClick={() => removeCareTeamMember(index)}
-                        className="text-sm text-red-600 hover:text-red-700"
+                        className="rounded-md px-2 py-1 text-sm text-red-600 hover:bg-red-50 hover:text-red-700"
                       >
                         Remove
                       </button>
@@ -308,7 +308,7 @@ export default function NewPatientPage() {
               <button
                 type="button"
                 onClick={addCareTeamMember}
-                className="text-sm font-medium text-blue-600 hover:text-blue-500"
+                className="rounded-md px-2 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 hover:text-blue-500"
               >
                 + Add Another Contact
               </button>

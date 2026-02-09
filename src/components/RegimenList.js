@@ -52,13 +52,13 @@ export default function RegimenList({ items, patientId, onUpdate }) {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">
           Treatment Regimen
         </h2>
         <Link
           href={`/dashboard/patients/${patientId}/regimen/new`}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          className="inline-flex items-center justify-center self-start rounded-md bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
         >
           Add Item
         </Link>
@@ -73,94 +73,92 @@ export default function RegimenList({ items, patientId, onUpdate }) {
           {activeItems.map((item) => (
             <div
               key={item.$id}
-              className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
+              className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
             >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl">
-                      {getCategoryIcon(item.category)}
-                    </span>
-                    <h4 className="text-lg font-semibold text-gray-900">
-                      {item.name}
-                    </h4>
-                    <span
-                      className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${getCategoryColor(item.category)}`}
-                    >
-                      {item.category}
-                    </span>
-                  </div>
+              <div className="flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-2xl">
+                    {getCategoryIcon(item.category)}
+                  </span>
+                  <h4 className="text-base font-semibold text-gray-900 sm:text-lg">
+                    {item.name}
+                  </h4>
+                  <span
+                    className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${getCategoryColor(item.category)}`}
+                  >
+                    {item.category}
+                  </span>
+                </div>
 
-                  <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
-                    {item.dosage && (
-                      <div>
-                        <span className="font-medium text-gray-700">
-                          Dosage:
-                        </span>
-                        <span className="ml-2 text-gray-600">
-                          {item.dosage}
-                        </span>
-                      </div>
-                    )}
-                    {item.frequency && (
-                      <div>
-                        <span className="font-medium text-gray-700">
-                          Frequency:
-                        </span>
-                        <span className="ml-2 text-gray-600">
-                          {item.frequency}
-                        </span>
-                      </div>
-                    )}
-                    {item.source && (
-                      <div>
-                        <span className="font-medium text-gray-700">
-                          Source:
-                        </span>
-                        <span className="ml-2 text-gray-600">
-                          {item.source}
-                        </span>
-                      </div>
-                    )}
-                    {item.startDate && (
-                      <div>
-                        <span className="font-medium text-gray-700">
-                          Start Date:
-                        </span>
-                        <span className="ml-2 text-gray-600">
-                          {new Date(item.startDate).toLocaleDateString()}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {item.notes && (
-                    <div className="mt-3">
-                      <p className="text-sm text-gray-600">{item.notes}</p>
+                <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+                  {item.dosage && (
+                    <div>
+                      <span className="font-medium text-gray-700">
+                        Dosage:
+                      </span>
+                      <span className="ml-2 text-gray-600">
+                        {item.dosage}
+                      </span>
+                    </div>
+                  )}
+                  {item.frequency && (
+                    <div>
+                      <span className="font-medium text-gray-700">
+                        Frequency:
+                      </span>
+                      <span className="ml-2 text-gray-600">
+                        {item.frequency}
+                      </span>
+                    </div>
+                  )}
+                  {item.source && (
+                    <div>
+                      <span className="font-medium text-gray-700">
+                        Source:
+                      </span>
+                      <span className="ml-2 text-gray-600">
+                        {item.source}
+                      </span>
+                    </div>
+                  )}
+                  {item.startDate && (
+                    <div>
+                      <span className="font-medium text-gray-700">
+                        Start Date:
+                      </span>
+                      <span className="ml-2 text-gray-600">
+                        {new Date(item.startDate).toLocaleDateString()}
+                      </span>
                     </div>
                   )}
                 </div>
 
-                <div className="ml-4 flex flex-col gap-2">
-                  <button
-                    onClick={() => handleToggleActive(item)}
-                    className="rounded-md border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
-                  >
-                    Mark Inactive
-                  </button>
-                  <Link
-                    href={`/dashboard/patients/${patientId}/regimen/${item.$id}/edit`}
-                    className="rounded-md border border-gray-300 px-3 py-1 text-center text-xs font-medium text-gray-700 hover:bg-gray-50"
-                  >
-                    Edit
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(item.$id)}
-                    className="rounded-md border border-red-300 px-3 py-1 text-xs font-medium text-red-700 hover:bg-red-50"
-                  >
-                    Delete
-                  </button>
-                </div>
+                {item.notes && (
+                  <div className="mt-3">
+                    <p className="text-sm text-gray-600">{item.notes}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-3 flex flex-wrap gap-2 border-t border-gray-100 pt-3">
+                <button
+                  onClick={() => handleToggleActive(item)}
+                  className="rounded-md border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  Mark Inactive
+                </button>
+                <Link
+                  href={`/dashboard/patients/${patientId}/regimen/${item.$id}/edit`}
+                  className="rounded-md border border-gray-300 px-3 py-2 text-center text-xs font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  Edit
+                </Link>
+                <button
+                  onClick={() => handleDelete(item.$id)}
+                  className="rounded-md border border-red-300 px-3 py-2 text-xs font-medium text-red-700 hover:bg-red-50"
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))}
@@ -195,9 +193,9 @@ export default function RegimenList({ items, patientId, onUpdate }) {
               key={item.$id}
               className="rounded-lg border border-gray-200 bg-gray-50 p-4 opacity-75"
             >
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="text-xl">
                       {getCategoryIcon(item.category)}
                     </span>
@@ -217,13 +215,13 @@ export default function RegimenList({ items, patientId, onUpdate }) {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleToggleActive(item)}
-                    className="rounded-md border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-white"
+                    className="rounded-md border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 hover:bg-white"
                   >
                     Reactivate
                   </button>
                   <button
                     onClick={() => handleDelete(item.$id)}
-                    className="rounded-md border border-red-300 px-3 py-1 text-xs font-medium text-red-700 hover:bg-red-50"
+                    className="rounded-md border border-red-300 px-3 py-2 text-xs font-medium text-red-700 hover:bg-red-50"
                   >
                     Delete
                   </button>

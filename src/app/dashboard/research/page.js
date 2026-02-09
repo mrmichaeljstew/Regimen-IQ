@@ -132,19 +132,19 @@ export default function ResearchPage() {
 
   return (
     <div>
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
             Research Workspace
           </h1>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-1 text-sm text-gray-600 sm:mt-2 sm:text-base">
             Save and organize treatment research notes
           </p>
         </div>
         {selectedPatient && (
           <button
             onClick={() => setShowForm(!showForm)}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            className="self-start rounded-md bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
           >
             {showForm ? "Cancel" : "New Note"}
           </button>
@@ -161,7 +161,7 @@ export default function ResearchPage() {
             <select
               value={selectedPatient || ""}
               onChange={(e) => handlePatientChange(e.target.value)}
-              className="mt-2 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:w-auto"
+              className="mt-2 w-full rounded-md border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:w-auto sm:text-sm"
             >
               {patients.map((patient) => (
                 <option key={patient.$id} value={patient.$id}>
@@ -268,7 +268,7 @@ export default function ResearchPage() {
                   <button
                     type="button"
                     onClick={addSource}
-                    className="text-sm text-blue-600 hover:text-blue-500"
+                    className="rounded-md px-2 py-1.5 text-sm text-blue-600 hover:bg-blue-50 hover:text-blue-500"
                   >
                     + Add Source
                   </button>
@@ -351,18 +351,16 @@ export default function ResearchPage() {
                     </div>
                   )}
 
-                  <div className="mt-auto flex items-center justify-between border-t border-gray-100 pt-4">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => alert(note.content)} // Simple view for now
-                        className="text-xs font-medium text-blue-600 hover:text-blue-500"
-                      >
-                        View Full
-                      </button>
-                    </div>
+                  <div className="mt-auto flex items-center justify-between border-t border-gray-100 pt-3">
+                    <button
+                      onClick={() => alert(note.content)}
+                      className="rounded-md px-2 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 hover:text-blue-500"
+                    >
+                      View Full
+                    </button>
                     <button
                       onClick={() => handleDelete(note.$id)}
-                      className="text-xs font-medium text-red-600 hover:text-red-500"
+                      className="rounded-md px-2 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 hover:text-red-500"
                     >
                       Delete
                     </button>
