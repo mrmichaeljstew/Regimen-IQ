@@ -56,12 +56,20 @@ export default function RegimenList({ items, patientId, onUpdate }) {
         <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">
           Treatment Regimen
         </h2>
-        <Link
-          href={`/dashboard/patients/${patientId}/regimen/new`}
-          className="inline-flex items-center justify-center self-start rounded-md bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
-        >
-          Add Item
-        </Link>
+        <div className="flex gap-2">
+          <Link
+            href={`/dashboard/patients/${patientId}/regimen/import`}
+            className="inline-flex items-center justify-center self-start rounded-md border border-blue-600 px-4 py-2.5 text-sm font-medium text-blue-600 hover:bg-blue-50"
+          >
+            Import
+          </Link>
+          <Link
+            href={`/dashboard/patients/${patientId}/regimen/new`}
+            className="inline-flex items-center justify-center self-start rounded-md bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
+          >
+            Add Item
+          </Link>
+        </div>
       </div>
 
       {/* Active Items */}

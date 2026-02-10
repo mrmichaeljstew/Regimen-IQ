@@ -262,6 +262,13 @@ export default function PatientDetailPage() {
                 <span className="font-medium">Add Regimen Item</span>
               </Link>
               <Link
+                href={`/dashboard/patients/${params.id}/regimen/import`}
+                className="flex items-center rounded-lg border border-gray-200 p-4 transition-shadow hover:shadow-md"
+              >
+                <span className="mr-3 text-2xl">📄</span>
+                <span className="font-medium">Import from Document</span>
+              </Link>
+              <Link
                 href={`/dashboard/research?patient=${params.id}`}
                 className="flex items-center rounded-lg border border-gray-200 p-4 transition-shadow hover:shadow-md"
               >
