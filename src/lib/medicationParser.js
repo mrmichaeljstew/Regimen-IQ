@@ -10,6 +10,11 @@
 
 import MEDICATIONS from "./medicationDictionary";
 
+let _nextItemId = 1;
+function generateItemId() {
+  return `ext-${_nextItemId++}`;
+}
+
 // --- Dosage regex patterns ---
 const DOSAGE_PATTERNS = [
   // Ranges: "200-400mg", "10-20 mg"
@@ -21,11 +26,13 @@ const DOSAGE_PATTERNS = [
 ];
 
 // --- Frequency patterns ---
+// Order matters: more specific multi-daily patterns must come before the
+// generic "daily" pattern, otherwise "twice daily" would match bare \bdaily\b first.
 const FREQUENCY_PATTERNS = [
-  { pattern: /\bonce\s+daily\b|\bevery\s+day\b|\bdaily\b|\bQD\b|\bq\.?d\.?\b/i, value: "daily" },
   { pattern: /\btwice\s+(?:a\s+)?daily\b|\btwo\s+times?\s+(?:a|per)\s+day\b|\bBID\b|\bb\.?i\.?d\.?\b/i, value: "twice daily" },
   { pattern: /\bthree\s+times?\s+(?:a|per)\s+day\b|\bTID\b|\bt\.?i\.?d\.?\b/i, value: "three times daily" },
   { pattern: /\bfour\s+times?\s+(?:a|per)\s+day\b|\bQID\b|\bq\.?i\.?d\.?\b/i, value: "four times daily" },
+  { pattern: /\bonce\s+daily\b|\bevery\s+day\b|\bdaily\b|\bQD\b|\bq\.?d\.?\b/i, value: "daily" },
   { pattern: /\bevery\s+(\d+)\s+hours?\b/i, value: null, compute: (m) => `every ${m[1]} hours` },
   { pattern: /\bevery\s+(\d+)\s+weeks?\b/i, value: null, compute: (m) => `every ${m[1]} weeks` },
   { pattern: /\bevery\s+(\d+)\s+days?\b/i, value: null, compute: (m) => `every ${m[1]} days` },
@@ -177,7 +184,7 @@ function extractNameFromLine(line) {
 
   // Remove common trailing descriptors
   cleaned = cleaned
-    .replace(/\b(oral|tablet|capsule|injection|infusion|topical|solution|suspension|cream|ointment|patch|drops?|spray|inhaler|powder|liquid|chewable|extended[- ]release|delayed[- ]release|immediate[- ]release|er|dr|ir|sr|xl|xr)\b/gi, " ")
+    .replace(/\b(oral|tablet|capsule|injection|infusion|topical|solution|suspension|cream|ointment|patch|drops?|spray|inhaler|powder|liquid|chewable|extended[- ]release|delayed[- ]release|immediate[- ]release|er|ir|sr|xl|xr)\b/gi, " ")
     .replace(/\b(take|by mouth|po|iv|im|sq|sub-?q|sub-?cutaneous|intravenous|intramuscular)\b/gi, " ")
     .replace(/\b(morning|evening|night|bedtime|breakfast|lunch|dinner)\b/gi, " ")
     .replace(/\s+/g, " ")
@@ -263,6 +270,7 @@ export function extractMedications(text) {
     const match = findMedicationMatch(cleanedLine);
     if (match && match.score >= 0.55) {
       items.push({
+        id: generateItemId(),
         name: match.medication.name,
         category: match.medication.category,
         dosage: parseDosage(trimmed),
@@ -284,6 +292,7 @@ export function extractMedications(text) {
         const nameMatch = findMedicationMatch(nameCandidate);
         if (nameMatch && nameMatch.score >= 0.55) {
           items.push({
+            id: generateItemId(),
             name: nameMatch.medication.name,
             category: nameMatch.medication.category,
             dosage: parseDosage(trimmed),
@@ -295,6 +304,7 @@ export function extractMedications(text) {
           });
         } else {
           items.push({
+            id: generateItemId(),
             name: nameCandidate,
             category: "medication",
             dosage: parseDosage(trimmed),
@@ -388,6 +398,7 @@ export async function extractMedicationsWithLLM(text, apiKey, apiEndpoint) {
 
   return {
     items: rawItems.map((item) => ({
+      id: generateItemId(),
       name: item.name || "",
       category: ["medication", "supplement", "therapy", "other"].includes(
         item.category

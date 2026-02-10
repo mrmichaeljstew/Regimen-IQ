@@ -311,42 +311,6 @@ export async function deleteRegimenItem(itemId) {
   }
 }
 
-/**
- * Batch create multiple regimen items from document import.
- * Uses the existing createRegimenItem function for each item,
- * then logs a single consolidated audit entry for the batch.
- * @param {string} userId
- * @param {string} patientId
- * @param {Array} items - Array of item data objects
- * @returns {Promise<{ success: boolean, data?: { imported: number, failed: number, errors: Array }, error?: string }>}
- */
-export async function createRegimenItemsBatch(userId, patientId, items) {
-  try {
-    const results = { imported: 0, failed: 0, errors: [] };
-
-    for (const item of items) {
-      const result = await createRegimenItem(userId, patientId, item);
-      if (result.success) {
-        results.imported++;
-      } else {
-        results.failed++;
-        results.errors.push({ name: item.name, error: result.error });
-      }
-    }
-
-    // Single batch audit log entry
-    logAction(userId, "batch_import", "regimen_items", patientId, {
-      imported: results.imported,
-      failed: results.failed,
-      itemNames: items.map((i) => i.name),
-    }).catch(() => {});
-
-    return { success: true, data: results };
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
-}
-
 // ============ INTERACTIONS ============
 
 export async function createInteraction(userId, patientId, interactionData) {

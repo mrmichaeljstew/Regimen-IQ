@@ -192,7 +192,7 @@ export default function ExtractedItemsReview({
       <div className="space-y-3">
         {items.map((item, index) => (
           <div
-            key={index}
+            key={item.id || index}
             className={`rounded-lg border bg-white p-4 transition-colors ${
               item.selected
                 ? "border-gray-200"

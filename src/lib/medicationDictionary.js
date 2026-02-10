@@ -202,7 +202,7 @@ const MEDICATIONS = [
   { name: "Ciprofloxacin", aliases: ["cipro"], category: "medication" },
   { name: "Levofloxacin", aliases: ["levaquin"], category: "medication" },
   { name: "Fluconazole", aliases: ["diflucan"], category: "medication" },
-  { name: "Acyclovir", aliases: ["zovirax", "valtrex"], category: "medication" },
+  { name: "Acyclovir", aliases: ["zovirax"], category: "medication" },
   { name: "Valacyclovir", aliases: ["valtrex"], category: "medication" },
   { name: "Sulfamethoxazole-Trimethoprim", aliases: ["bactrim", "septra", "tmp-smx"], category: "medication" },
   { name: "Diphenhydramine", aliases: ["benadryl"], category: "medication" },
