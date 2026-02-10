@@ -14,8 +14,6 @@ import DocumentUpload from "@/components/DocumentUpload";
 import ExtractedItemsReview from "@/components/ExtractedItemsReview";
 import Link from "next/link";
 
-const LLM_API_KEY_STORAGE = "regimeniq_llm_api_key";
-const LLM_ENDPOINT_STORAGE = "regimeniq_llm_endpoint";
 
 export default function ImportRegimenPage() {
   const params = useParams();
@@ -71,19 +69,6 @@ export default function ImportRegimenPage() {
         setExistingItems(
           regimenResult.data.map((item) => item.name.toLowerCase())
         );
-      }
-
-      // Load saved LLM settings from localStorage
-      try {
-        const savedKey = localStorage.getItem(LLM_API_KEY_STORAGE);
-        const savedEndpoint = localStorage.getItem(LLM_ENDPOINT_STORAGE);
-        if (savedKey) {
-          setLlmApiKey(savedKey);
-          setUseLlm(true);
-        }
-        if (savedEndpoint) setLlmEndpoint(savedEndpoint);
-      } catch {
-        // localStorage may not be available
       }
 
       setLoading(false);
@@ -182,22 +167,6 @@ export default function ImportRegimenPage() {
     setError("");
   };
 
-  const saveLlmSettings = () => {
-    try {
-      if (llmApiKey) {
-        localStorage.setItem(LLM_API_KEY_STORAGE, llmApiKey);
-      } else {
-        localStorage.removeItem(LLM_API_KEY_STORAGE);
-      }
-      if (llmEndpoint) {
-        localStorage.setItem(LLM_ENDPOINT_STORAGE, llmEndpoint);
-      } else {
-        localStorage.removeItem(LLM_ENDPOINT_STORAGE);
-      }
-    } catch {
-      // localStorage may not be available
-    }
-  };
 
   if (loading) {
     return (
@@ -310,7 +279,7 @@ export default function ImportRegimenPage() {
                         type="password"
                         value={llmApiKey}
                         onChange={(e) => setLlmApiKey(e.target.value)}
-                        onBlur={saveLlmSettings}
+
                         placeholder="sk-..."
                         className="mt-1 w-full rounded border border-gray-200 px-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                       />
@@ -323,15 +292,15 @@ export default function ImportRegimenPage() {
                         type="text"
                         value={llmEndpoint}
                         onChange={(e) => setLlmEndpoint(e.target.value)}
-                        onBlur={saveLlmSettings}
+
                         placeholder="https://api.openai.com/v1/chat/completions"
                         className="mt-1 w-full rounded border border-gray-200 px-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                       />
                     </div>
                     <p className="text-xs text-gray-500">
-                      Your API key is stored locally in your browser and never
-                      sent to our servers. It is used only for direct
-                      communication with the AI provider.
+                      Your API key is held in memory for this session only and
+                      is never stored or sent to our servers. It is used only
+                      for direct communication with the AI provider.
                     </p>
                   </div>
                 )}

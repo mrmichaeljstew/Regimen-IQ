@@ -110,9 +110,12 @@ async function extractFromPdf(file, onProgress) {
     };
   }
 
-  // Set worker source from CDN to avoid webpack bundling issues
+  // Use local worker from pdfjs-dist package (copied to public/ at build time)
   if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+      "pdfjs-dist/build/pdf.worker.min.mjs",
+      import.meta.url
+    ).toString();
   }
 
   const arrayBuffer = await file.arrayBuffer();

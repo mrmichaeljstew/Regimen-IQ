@@ -92,7 +92,10 @@ export default function DocumentUpload({
   const handleRemoveFile = useCallback(() => {
     setSelectedFile(null);
     setError("");
-  }, []);
+    if (onFileSelected) {
+      onFileSelected(null);
+    }
+  }, [onFileSelected]);
 
   const formatFileSize = (bytes) => {
     if (bytes < 1024) return `${bytes} B`;
